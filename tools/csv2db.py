@@ -52,21 +52,25 @@ c.execute(query)
 for csvfilename in csvfiles:
 	print(csvfilename)
 	with open(csvfolder + csvfilename) as csvfile:
-		reader = csv.DictReader(csvfile)
+		reader = csv.reader(csvfile)
+		next(reader,None) # skip headers
 		for row in reader:
 			r = []
 			query = 'INSERT INTO data VALUES ('
-			for idx in range(len(headers)):
-				if col_type[idx] == 'text':
-					r.append(row[headers[idx]])
-				else:
-					r.append(float(row[headers[idx]]))
-				if idx < len(headers)-1:
-					query += '?,'
-				else:
-					query += '?)'
-			r = tuple(r)
-			c.execute(query,r)
-			conn.commit()
+			try:
+				for idx in range(len(headers)):
+					if col_type[idx] == 'text':
+						r.append(row[idx])
+					else:
+						r.append(float(row[idx]))
+					if idx < len(headers)-1:
+						query += '?,'
+					else:
+						query += '?)'
+				r = tuple(r)
+				c.execute(query,r)
+			except ValueError:
+				continue
+		conn.commit()
 
 conn.close();
