@@ -28,7 +28,10 @@ lat_spacing = sys.argv[1]
 long_spacing = sys.argv[2]
 filename = sys.argv[3]
 
-url = "http://streeteasy.com/nyc/api/areas/deep_info?id=1&key=ba43ddbbde3634728c16ebda0190d62c74ff8dd7&format=json"
+with open('streeteasy.key', 'r') as f:
+	apikey = f.read().replace('\n','')
+
+url = "http://streeteasy.com/nyc/api/areas/deep_info?id=1&key=" + apikey + "&format=json"
 response = urllib.request.urlopen(url)
 response_str = response.readall().decode('utf-8')
 data = json.loads(response_str)
