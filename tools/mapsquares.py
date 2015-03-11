@@ -4,6 +4,7 @@ import urllib.parse
 import json
 import polyline
 import csv
+import numpy as np
 
 # Descend streeteasy json structure
 def descend(jsonobj):
@@ -31,20 +32,19 @@ def point_in_polygon(x,y,poly):
 	p1x,p1y = poly[0]
 	for i in range(n+1):
 		p2x,p2y = poly[i % n]
-        if y > min(p1y,p2y):
-            if y <= max(p1y,p2y):
-                if x <= max(p1x,p2x):
-                    if p1y != p2y:
-                        xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
-                    if p1x == p2x or x <= xinters:
-                        inside = not inside
-        p1x,p1y = p2x,p2y
-    return inside
+		if y > min(p1y,p2y):
+			if y <= max(p1y,p2y):
+				if x <= max(p1x,p2x):
+					if p1y != p2y:
+						xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+					if p1x == p2x or x <= xinters:
+						inside = not inside
+		p1x,p1y = p2x,p2y
+	return inside
 
 ## MAIN ##
-lat_spacing = sys.argv[1]
-long_spacing = sys.argv[2]
-filename = sys.argv[3]
+lat_spacing = float(sys.argv[1])
+long_spacing = float(sys.argv[2])
 
 with open('streeteasy.key', 'r') as f:
 	apikey = f.read().replace('\n','')
@@ -76,22 +76,36 @@ for key in neighborhoods:
 
 squares = []
 square_id = 0;
-for slat in range(min_lat-lat_spacing,max_lat,lat_spacing):
-	for slong in range(min_long-long_spacing,max_long,long_spacing):
+for slat in np.arange(min_lat-lat_spacing,max_lat,lat_spacing):
+	for slong in np.arange(min_long-long_spacing,max_long,long_spacing):
 		for key in neighborhoods:
 			# Check corners
 			numpts = 0
-			if point_in_polygon(slat,slong,neighborhoods[key]['boundary'])
+			if point_in_polygon(slat,slong,neighborhoods[key]['boundary']):
 				numpts += 1
-			if point_in_polygon(slat+long_spacing,slong,neighborhoods[key]['boundary'])
+			if point_in_polygon(slat+long_spacing,slong,neighborhoods[key]['boundary']):
 				numpts += 1
-			if point_in_polygon(slat,y+long_spacing,neighborhoods[key]['boundary'])
+			if point_in_polygon(slat,slong+long_spacing,neighborhoods[key]['boundary']):
 				numpts += 1
-			if point_in_polygon(slat+long_spacing,slong+long_spacing,neighborhoods[key]['boundary'])
+			if point_in_polygon(slat+long_spacing,slong+long_spacing,neighborhoods[key]['boundary']):
 				numpts += 1	
-			if point_in_polygon(slat+(long_spacing/2),slong+(long_spacing/2),neighborhoods[key]['boundary'])
+			if point_in_polygon(slat+(long_spacing/2),slong+(long_spacing/2),neighborhoods[key]['boundary']):
 				numpts += 1
-			if numpts >= 3
-				squares[square_id] = {'min_lat': slat, 'max_lat': slat+lat_spacing, 'min_long': slong, 'max_long': slong+long_spacing, 'neighborhood': neighborhoods[key]['id']}
+			if numpts >= 3:
+				squares.append({'id':square_id, 'min_lat': slat, 'max_lat': slat+lat_spacing, 'min_long': slong, 'max_long': slong+long_spacing, 'neighborhood': neighborhoods[key]['id']})
+				square_id += 1
 				break
 
+# Make CSVs
+print('Making CSV files')
+with open('neighborhoods.csv','w') as csvfile:
+	csvwriter = csv.writer(csvfile)
+	csvwriter.writerow(['id', 'path', 'title', 'subtitle', 'name', 'city', 'state'])
+	for key in neighborhoods:
+		csvwriter.writerow([ neighborhoods[key]['path'], neighborhoods[key]['title'], neighborhoods[key]['subtitle'], neighborhoods[key]['name'], neighborhoods[key]['city'], neighborhoods[key]['state'] ])
+
+with open('squares.csv','w') as csvfile:
+	csvwriter = csv.writer(csvfile)
+	csvwriter.writerow(['id', 'min_lat', 'max_lat', 'min_long', 'max_long', 'neighborhood'])
+	for ind in range(len(squares)):
+		csvwriter.writerow([squares[ind]['id'], squares[ind]['min_lat'], squares[ind]['max_lat'], squares[ind]['min_long'], squares[ind]['max_long'], squares[ind]['neighborhood']])
