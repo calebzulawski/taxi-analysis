@@ -3,8 +3,9 @@ import urllib.request
 import urllib.parse
 import json
 import polyline
+import csv
 
-## Descend streeteasy json structure ##
+# Descend streeteasy json structure
 def descend(jsonobj):
 	result = {}
 	parent = jsonobj['path']
@@ -23,6 +24,23 @@ def descend(jsonobj):
 		result.update(deeper)
 	return result
 
+# Check if point is in polygon
+def point_in_polygon(x,y,poly):
+	n = len(poly)
+	inside = False
+	p1x,p1y = poly[0]
+	for i in range(n+1):
+		p2x,p2y = poly[i % n]
+        if y > min(p1y,p2y):
+            if y <= max(p1y,p2y):
+                if x <= max(p1x,p2x):
+                    if p1y != p2y:
+                        xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                    if p1x == p2x or x <= xinters:
+                        inside = not inside
+        p1x,p1y = p2x,p2y
+    return inside
+
 ## MAIN ##
 lat_spacing = sys.argv[1]
 long_spacing = sys.argv[2]
@@ -37,4 +55,43 @@ response_str = response.readall().decode('utf-8')
 data = json.loads(response_str)
 neighborhoods = descend(data)
 
-print(len(neighborhoods))
+# Give neighborhoods unique numeric ids
+for key in neighborhoods:
+	neighborhoods[key]['id'] = list(neighborhoods.keys()).index(key)
+
+min_lat = -73.9
+max_lat = -73.9
+min_long = 40.65
+max_long = 40.65
+for key in neighborhoods:
+	for pos in neighborhoods[key]['boundary']:
+		if pos[0] < min_lat:
+			min_lat = pos[0]
+		if pos[0] > max_lat:
+			max_lat = pos[0]
+		if pos[1] < min_long:
+			min_long = pos[1]
+		if pos[1] > max_long:
+			max_long = pos[1]
+
+squares = []
+square_id = 0;
+for slat in range(min_lat-lat_spacing,max_lat,lat_spacing):
+	for slong in range(min_long-long_spacing,max_long,long_spacing):
+		for key in neighborhoods:
+			# Check corners
+			numpts = 0
+			if point_in_polygon(slat,slong,neighborhoods[key]['boundary'])
+				numpts += 1
+			if point_in_polygon(slat+long_spacing,slong,neighborhoods[key]['boundary'])
+				numpts += 1
+			if point_in_polygon(slat,y+long_spacing,neighborhoods[key]['boundary'])
+				numpts += 1
+			if point_in_polygon(slat+long_spacing,slong+long_spacing,neighborhoods[key]['boundary'])
+				numpts += 1	
+			if point_in_polygon(slat+(long_spacing/2),slong+(long_spacing/2),neighborhoods[key]['boundary'])
+				numpts += 1
+			if numpts >= 3
+				squares[square_id] = {'min_lat': slat, 'max_lat': slat+lat_spacing, 'min_long': slong, 'max_long': slong+long_spacing, 'neighborhood': neighborhoods[key]['id']}
+				break
+
