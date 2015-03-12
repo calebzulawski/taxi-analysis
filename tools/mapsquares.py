@@ -102,7 +102,7 @@ with open('neighborhoods.csv','w') as csvfile:
 	csvwriter = csv.writer(csvfile)
 	csvwriter.writerow(['id', 'path', 'title', 'subtitle', 'name', 'city', 'state'])
 	for key in neighborhoods:
-		csvwriter.writerow([ neighborhoods[key]['path'], neighborhoods[key]['title'], neighborhoods[key]['subtitle'], neighborhoods[key]['name'], neighborhoods[key]['city'], neighborhoods[key]['state'] ])
+		csvwriter.writerow([ neighborhoods[key]['id'], neighborhoods[key]['path'], neighborhoods[key]['title'], neighborhoods[key]['subtitle'], neighborhoods[key]['name'], neighborhoods[key]['city'], neighborhoods[key]['state'] ])
 
 with open('squares.csv','w') as csvfile:
 	csvwriter = csv.writer(csvfile)
