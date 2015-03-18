@@ -46,7 +46,7 @@ def point_in_polygon(x,y,poly):
 lat_spacing = float(sys.argv[1])
 long_spacing = float(sys.argv[2])
 
-with open('streeteasy.key', 'r') as f:
+with open('keys/streeteasy.key', 'r') as f:
 	apikey = f.read().replace('\n','')
 
 url = "http://streeteasy.com/nyc/api/areas/deep_info?id=1&key=" + apikey + "&format=json"

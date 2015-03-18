@@ -1,0 +1,56 @@
+import httplib2
+import csv
+
+import getboundary
+
+from apiclient.discovery import build
+
+from oauth2client.client import SignedJwtAssertionCredentials
+
+def r2h(query_response,kmlfile,apikey):
+	with open('neighborhoods.csv', mode='r') as csvfile:
+		reader = csv.reader(csvfile)
+		neighborhood_dict = {rows[0]:rows[1] for rows in reader}
+
+	max_val = 0;
+	for row in query_response['rows']:
+		result_row = []
+		for field in row['f']:
+			result_row.append(field['v'])
+		if result_row[1] > max_val:
+			max_val = result_row;
+
+	for row in query_response['rows']:
+		result_row = []
+		for field in row['f']:
+			result_row.append(field['v'])
+		boundary = getboundary.get(neighborhood_dict[result_row[0]], apikey)
+		print(boundary)
+		
+
+# LOAD API KEYS
+with open('keys/streeteasy.key', 'r') as f:
+	streeteasykey = f.read().replace('\n','')
+with open('keys/bigqueryid.key', 'r') as f:
+	PROJECT_ID = f.read().replace('\n','')
+with open('keys/service.email', 'r') as f:
+	SERVICE_ACCOUNT_EMAIL = f.read().replace('\n','')
+with open('keys/googlekey.p12','rb') as f:
+	key = f.read()
+
+credentials = SignedJwtAssertionCredentials(
+    SERVICE_ACCOUNT_EMAIL,
+    key,
+    scope='https://www.googleapis.com/auth/bigquery')
+
+http = httplib2.Http()
+http = credentials.authorize(http)
+
+service = build('bigquery', 'v2')
+
+query_data = {'query':'SELECT pickup_neighborhood, count(pickup_neighborhood) AS count FROM [taxi_dataset.trip_data_neighborhoods] GROUP BY pickup_neighborhood ORDER BY pickup_neighborhood'}
+query_request = service.jobs()
+
+query_response = query_request.query(projectId=PROJECT_ID,body=query_data).execute(http)
+
+r2h(query_response, 'pickup_full.kml', streeteasykey)
