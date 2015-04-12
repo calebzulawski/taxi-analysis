@@ -1,6 +1,6 @@
 {
     overlays: [
-    	{ url: 'json/1.json', title: 'Circle'},
-        { url: 'json/2.json', title: 'Square'}
+    	{ url: '1.json', title: 'Circle'},
+        { url: '2.json', title: 'Square'}
     ]
 }

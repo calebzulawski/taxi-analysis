@@ -21,20 +21,12 @@ angular.module('mapApp').controller('mainCtrl', ['$scope', function($scope) {
 
 
 angular.module('mapApp').controller('sideCtrl', ['$scope','$http', function($scope, $http) {
-    $http.get('json/list.json').success(function(data) { 
+    jsonRoot = 'webapp/json/'
+    $http.get(jsonRoot + 'json').success(function(data) { 
         $scope.list = data
-    });
-
-    /*
-    $scope.list = {
-        overlays: [
-            { url: 'json/1.json', title: 'Some data thing'},
-            { url: 'json/2.json', title: 'Some other thing'}
-        ]
-    }
-    */  
+    }); 
 
     $scope.loadJson = function(url) {
-        alert(url)
+        alert(jsonRoot + url)
     }
 }]);
