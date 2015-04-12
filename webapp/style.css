@@ -3,5 +3,13 @@ body {
 }
 
 .angular-google-map-container {
-	height: 100vh;
+    width: 80%;
+    height: 100vh;
+    float: left;
+}
+
+#sidebar {
+    float: left;
+    height: 100vh;
+    width: 20%;
 }
