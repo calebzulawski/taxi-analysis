@@ -22,7 +22,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope', function($scope) {
 
 angular.module('mapApp').controller('sideCtrl', ['$scope','$http', function($scope, $http) {
     var jsonRoot = 'webapp/json/'
-    $http.get(jsonRoot + 'json').success(function(data) { 
+    $http.get(jsonRoot + 'list.json').success(function(data) { 
         $scope.list = data
     }); 
 
