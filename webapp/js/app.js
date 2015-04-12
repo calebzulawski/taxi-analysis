@@ -22,11 +22,16 @@ angular.module('mapApp').controller('mainCtrl', ['$scope', function($scope) {
 
 angular.module('mapApp').controller('sideCtrl', ['$scope','$http', function($scope, $http) {
     var jsonRoot = 'webapp/json/'
+    $scope.polygons = []
+
     $http.get(jsonRoot + 'list.json').success(function(data) { 
         $scope.list = data
-    }); 
+    });     
 
     $scope.loadJson = function(url) {
-        alert(jsonRoot + url)
+        $http.get(jsonRoot + url).success(function(data) {
+              $scope.polygons = data
+              $scope.currentTitle = data.title
+        });
     }
 }]);
