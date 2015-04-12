@@ -44,8 +44,10 @@ def point_in_polygon(x,y,poly):
 	return inside
 
 ## MAIN ##
-lat_spacing = float(sys.argv[1])
-long_spacing = float(sys.argv[2])
+#lat_spacing = float(sys.argv[1])
+#long_spacing = float(sys.argv[2])
+lat_spacing = 0.001
+long_spacing = 0.001
 
 with open('keys/streeteasy.key', 'r') as f:
 	apikey = f.read().replace('\n','')
@@ -74,6 +76,11 @@ for key in neighborhoods:
 			min_long = pos[1]
 		if pos[1] > max_long:
 			max_long = pos[1]
+
+min_lat = round(min_lat,3) - 0.0015
+max_lat = round(max_lat,3) + 0.0015
+min_long = round(min_long,3) - 0.0015
+max_long = round(max_long,3) + 0.0015
 
 squares = []
 square_id = 0;
