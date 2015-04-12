@@ -7,7 +7,7 @@ import csv
 import numpy as np
 
 # Descend streeteasy json structure
-def descend(jsonobj):
+def descend(jsonobj,depth=0,maxdepth=3):
 	result = {}
 	parent = jsonobj['path']
 
@@ -20,9 +20,10 @@ def descend(jsonobj):
 		result[jsonobj['path']]['city'] = jsonobj['city']
 		result[jsonobj['path']]['state'] = jsonobj['state']
 		result[jsonobj['path']]['boundary'] = polyline.decode(jsonobj['boundary_encoded_points_string'])
-	for descendent in jsonobj['descendents']:
-		deeper = descend(descendent)
-		result.update(deeper)
+	if depth < maxdepth:
+		for descendent in jsonobj['descendents']:
+			deeper = descend(descendent,depth=depth+1,maxdepth=maxdepth)
+			result.update(deeper)
 	return result
 
 # Check if point is in polygon
