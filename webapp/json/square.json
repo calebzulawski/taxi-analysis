@@ -2,25 +2,29 @@
 	"title" : "Square title",
     "polygons": [
     	{
+    		"id": 1,
     		"label": "A",
     		"fill": { "color": "#FF0000", "opacity": 1},
     		"stroke": {"color": "#000000", "weight": 10, "opacity": 0.5},
     		"path": [
-    		{ "longitude": 40.65, "latitude": -74.11},
-    		{ "longitude": 40.65, "latitude": -73.96},
-    		{ "longitude": 40.77, "latitude": -73.96},
-    		{ "longitude": 40.77, "latitude": -74.11}
+    		{ "latitude": 40.65, "longitude": -74.11},
+    		{ "latitude": 40.65, "longitude": -73.96},
+    		{ "latitude": 40.77, "longitude": -73.96},
+    		{ "latitude": 40.77, "longitude": -74.11},
+    		{ "latitude": 40.65, "longitude": -74.11}
     		]
     	},
     	{
+    		"id": 2,
     		"label": "B",
     		"fill": { "color": "#0000FF", "opacity": 0.5},
     		"stroke": {"color": "#FF0000", "weight": 20, "opacity": 1},
     		"path": [
-    		{ "longitude": 40.85, "latitude": -74.01},
-    		{ "longitude": 40.85, "latitude": -73.86},
-    		{ "longitude": 40.97, "latitude": -73.86},
-    		{ "longitude": 40.97, "latitude": -74.01}
+    		{ "latitude": 40.85, "longitude": -74.01},
+    		{ "latitude": 40.85, "longitude": -73.86},
+    		{ "latitude": 40.97, "longitude": -73.86},
+    		{ "latitude": 40.97, "longitude": -74.01},
+    		{ "latitude": 40.85, "longitude": -74.01}
     		]
     	}
     ]

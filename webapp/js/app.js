@@ -35,6 +35,6 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
               $scope.polygons = data
               $scope.currentTitle = data.title
         });
-        $scope.control.refresh({ latitude: 40.7127, longitude: -74.0059 })
+        //$scope.control.refresh({ latitude: 40.7127, longitude: -74.0059 })
     }
 }]);
