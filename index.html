@@ -12,16 +12,21 @@
 </head>
 
 <body ng-app="mapApp">
-		<div id="sidebar" ng-controller="sideCtrl">
+	<div ng-controller="mainCtrl">
+		<div id="sidebar">
 			<div ng-repeat="choice in list.overlays">
     			<a href="" ng-click="loadJson(choice.url)">{{choice.title}}</a>
 			</div>
+			<div>
+				{{currentTitle}}
+			</div>
 		</div>
-		<div id="map_canvas" ng-controller="mainCtrl" class='.angular-google-map-container'>
-	    	<ui-gmap-google-map center="map.center" zoom="map.zoom" options="options">
+		<div id="map_canvas" class='.angular-google-map-container'>
+	    	<ui-gmap-google-map center="map.center" zoom="map.zoom" options="map.options" control="control">
 	    		<ui-gmap-polygon ng-repeat="polygon in polygons.polygons" path="polygon.path" fill="polygon.fill" stroke="polygon.stroke" static="true" visible="true"></ui-gmap-polygon>
 	    	</ui-gmap-google-map>
 		</div>
+	</div>
 </body>
 
 </html>

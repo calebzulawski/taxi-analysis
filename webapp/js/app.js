@@ -9,18 +9,20 @@ angular.module('mapApp').config(function(uiGmapGoogleMapApiProvider) {
     });
 })
 
-angular.module('mapApp').controller('mainCtrl', ['$scope', function($scope) {
-	$scope.map = { center: { latitude: 40.7127, longitude: -74.0059 }, zoom: 11 };
-    $scope.options = {
-        minZoom: 11,
-        streetViewControl: false,
-        zoomControl: false,
-        panControl: false
-    }
-}]);
+angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($scope, $http) {
+    $scope.map = {
+        center: { latitude: 40.7127, longitude: -74.0059 },
+        zoom: 11,
+        bounds: {},
+        options: {
+            minZoom: 11,
+            streetViewControl: false,
+            zoomControl: false,
+            panControl: false
+        },
+    };
+    $scope.control = {}
 
-
-angular.module('mapApp').controller('sideCtrl', ['$scope','$http', function($scope, $http) {
     var jsonRoot = 'webapp/json/'
     $scope.polygons = []
 
@@ -33,5 +35,6 @@ angular.module('mapApp').controller('sideCtrl', ['$scope','$http', function($sco
               $scope.polygons = data
               $scope.currentTitle = data.title
         });
+        $scope.control.refresh({ latitude: 40.7127, longitude: -74.0059 })
     }
 }]);
