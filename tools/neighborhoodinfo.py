@@ -4,7 +4,7 @@ import json
 import csv
 
 # Descend streeteasy json structure
-def descend(jsonobj):
+def descend(jsonobj,depth=0,maxdepth=3):
 	result = {}
 	parent = jsonobj['path']
 
@@ -17,9 +17,10 @@ def descend(jsonobj):
 		result[jsonobj['path']]['city'] = jsonobj['city']
 		result[jsonobj['path']]['state'] = jsonobj['state']
 		result[jsonobj['path']]['boundary'] = jsonobj['boundary_encoded_points_string']
-	for descendent in jsonobj['descendents']:
-		deeper = descend(descendent)
-		result.update(deeper)
+	if depth < maxdepth:
+		for descendent in jsonobj['descendents']:
+			deeper = descend(descendent,depth=depth+1,maxdepth=maxdepth)
+			result.update(deeper)
 	return result
 
 with open('keys/streeteasy.key', 'r') as f:
@@ -30,6 +31,9 @@ response = urllib.request.urlopen(url)
 response_str = response.readall().decode('utf-8')
 data = json.loads(response_str)
 neighborhoods = descend(data)
+
+for key in neighborhoods:
+	neighborhoods[key]['id'] = list(neighborhoods.keys()).index(key)
 
 with open('neighborhoods-boundarys.csv','w') as csvfile:
 	csvwriter = csv.writer(csvfile)
