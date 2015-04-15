@@ -12,7 +12,7 @@ for key, value in neighborhood_dict.items():
 	boundary = polyline.decode(value[1])
 	for coords in boundary:
 		polygon.append({'latitude': coords[1], 'longitude': coords[0]})
-	polygons.append({'id': key, 'label': value[2], 'fill': { 'color': '#000000', 'opacity': 0}, 'stroke': {'color': '#000000', 'weight': 3, 'opacity': 1}, 'path': polygon})
+	polygons.append({'id': key, 'label': value[2], 'fill': { 'color': '#000000', 'opacity': 0.5}, 'stroke': {'color': '#000000', 'weight': 3, 'opacity': 1}, 'path': polygon})
 
 jsonobj = {'title': 'Neighborhood Boundaries', 'polygons': polygons}
 
