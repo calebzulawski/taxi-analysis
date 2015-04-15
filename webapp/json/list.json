@@ -1,5 +1,6 @@
 {
     "overlays": [
+    	{ "url": "boundaries.json", "title": "Neighborhood Boundaries"},
     	{ "url": "square.json", "title": "Squares"},
         { "url": "triangle.json", "title": "Triangles"}
     ]
