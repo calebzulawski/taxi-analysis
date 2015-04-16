@@ -42,7 +42,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                 $scope.polygons.push( {
                     id: id,
                     path: temppath,
-                    fill: {color: '#000000', opacity: 0.1},
+                    fill: {color: '#000000', opacity: 0.5},
                     stroke: {color: '#000000', weight: 2, opacity: 1},
                     cityid: item.properties.BoroCD
                     } )
@@ -61,7 +61,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                     $scope.polygons.push( {
                         id: id,
                         path: temppath,
-                        fill: {color: '#000000', opacity: 0.1},
+                        fill: {color: '#000000', opacity: 0.5},
                         stroke: {color: '#000000', weight: 2, opacity: 1},
                         cityid: item.properties.BoroCD
                         } )
@@ -72,10 +72,54 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
         }
     }); 
 
-
     $http.get(jsonRoot + 'list.json').success(function(data) { 
         $scope.list = data
     });     
+
+    var regionEvents = {
+        click: function(poly,eventName,model,args) {
+            var id;
+            var bounds = {
+                northeast: {
+                    latitude: -9999,
+                    longitude: -9999
+                },
+                southwest: {
+                    latitude: 9999,
+                    longitude: 9999,
+                }
+            }
+
+            for (var i = 0; i < $scope.polygons.length; i++) {
+                if ($scope.polygons[i].id == model.$parent.$index) {
+                    id = $scope.polygons[i].cityid;
+                }
+                $scope.polygons[i].fill = {color: '#000000', opacity: 0.5};
+            }
+            for (var i = 0; i < $scope.polygons.length; i++) {
+                if ($scope.polygons[i].cityid == id) {
+                    $scope.polygons[i].fill = {color: '#FF0000', opacity: 0.5};
+                    for (var j = 0; j < $scope.polygons[i].path.length; j++) {
+                        if ($scope.polygons[i].path[j].longitude > bounds.northeast.longitude) {
+                            bounds.northeast.longitude = $scope.polygons[i].path[j].longitude;
+                        }
+                        if ($scope.polygons[i].path[j].latitude > bounds.northeast.latitude) {
+                            bounds.northeast.latitude = $scope.polygons[i].path[j].latitude;
+                        }
+                        if ($scope.polygons[i].path[j].longitude < bounds.southwest.longitude) {
+                            bounds.southwest.longitude = $scope.polygons[i].path[j].longitude;
+                        }
+                        if ($scope.polygons[i].path[j].latitude < bounds.southwest.latitude) {
+                            bounds.southwest.latitude = $scope.polygons[i].path[j].latitude;
+                        }
+                    }
+                }
+            }
+            $scope.map.bounds = bounds;
+        }
+    }
+
+    $scope.events = regionEvents;
 
     $scope.loadJson = function(url) {
         $http.get(jsonRoot + url).success(function(data) {
