@@ -23,7 +23,7 @@
 		</div>
 		<div id="map_canvas" class='.angular-google-map-container'>
 	    	<ui-gmap-google-map center="map.center" zoom="map.zoom" options="map.options" control="control">
-	    		<ui-gmap-polygon ng-repeat="polygon in polygons.polygons track by polygon.id" path="polygon.path" fill="polygon.fill" stroke="polygon.stroke" static="true" visible="true"></ui-gmap-polygon>
+	    		<ui-gmap-polygon ng-repeat="p in polygons track by p.id" path="p.path" fill="p.fill" stroke="p.stroke" static="true" visible="true"></ui-gmap-polygon>
 	    	</ui-gmap-google-map>
 		</div>
 	</div>
