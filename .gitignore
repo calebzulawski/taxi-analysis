@@ -5,3 +5,4 @@ keys/
 *.csv
 *.exe
 mongoose
+*.pyc
