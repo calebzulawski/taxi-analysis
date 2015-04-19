@@ -1,4 +1,46 @@
 "use strict"
+
+function getColor(value){
+    var h = (1-value*.66 - .33)/2;
+    var s = 1;
+    var l = .5;
+    var r, g, b;
+
+    if (s == 0) {
+        r = g = b = l; // achromatic
+    } else {
+        var hue2rgb = function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    r = Math.round(r * 255).toString(16);
+    g = Math.round(g * 255).toString(16);
+    b = Math.round(b * 255).toString(16);
+
+    if (r.length == 1) {
+        r = '0' + r;
+    }
+    if (g.length == 1) {
+        g = '0' + g;
+    }
+    if (b.length == 1) {
+        b = '0' + b;
+    }
+    return '#'+r+g+b;
+}
+
 angular.module('mapApp', ['uiGmapgoogle-maps']);
 
 angular.module('mapApp').config(function(uiGmapGoogleMapApiProvider) {
@@ -75,11 +117,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                 }
             }
         }
-    }); 
-
-    $http.get(jsonRoot + 'list.json').success(function(data) { 
-        $scope.list = data
-    });     
+    });  
 
     var regionEvents = {
         click: function(poly,eventName,model,args) {
@@ -99,11 +137,11 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                 if ($scope.polygons[i].id == model.$parent.$index) {
                     id = $scope.polygons[i].cityid;
                 }
-                $scope.polygons[i].fill = {color: '#000000', opacity: 0.5};
+                $scope.polygons[i].fill = {color: $scope.polygons[i].fill.color, opacity: .5};
             }
             for (var i = 0; i < $scope.polygons.length; i++) {
                 if ($scope.polygons[i].cityid == id) {
-                    $scope.polygons[i].fill = {color: '#000000', opacity: 0};
+                    $scope.polygons[i].fill = {color: $scope.polygons[i].fill.color, opacity: 0};
                     for (var j = 0; j < $scope.polygons[i].path.length; j++) {
                         if ($scope.polygons[i].path[j].longitude > bounds.northeast.longitude) {
                             bounds.northeast.longitude = $scope.polygons[i].path[j].longitude;
@@ -122,10 +160,6 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
             }
 
             $scope.squares = $scope.allSquares[id].squares
-            for (var i = 0; i < $scope.squares.length; i++) {
-                $scope.squares[i].fill = {color: '#FF0000', opacity: 0.5};
-                $scope.squares[i].stroke = {color: '#000000', weight: 1, opacity: 1};
-            }
 
             $scope.map.bounds = bounds;
         }
@@ -134,10 +168,60 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
     $scope.events = regionEvents;
 
     $scope.loadJson = function(url) {
-        $http.get(jsonRoot + url).success(function(data) {
-              //$scope.polygons = data
-              //$scope.currentTitle = data.title
+        $http.get(jsonRoot + '/data/' + url + '/neighborhood.json').success(function(data) {
+            var min = 999999999;
+            var max = -999999999;
+            for (var i = 0; i < data.data.length; i++) {
+                data.data[i] = {neighborhood: parseInt(data.data[i].neighborhood,10), value: parseInt(data.data[i].value,10)}
+                if (data.data[i].value < min) {
+                    min = data.data[i].value;
+                }
+                if (data.data[i].value > max) {
+                    max = data.data[i].value;
+                }
+            }
+
+            for (var i = 0; i < data.data.length; i++) {
+                for (var j = 0; j < $scope.polygons.length; j++) {
+                    if (data.data[i].neighborhood == $scope.polygons[j].cityid) {
+                        $scope.polygons[j].fill = {color: getColor(Math.log2((data.data[i].value - min)/(max-min)+1)), opacity: 0.5};
+                    }
+                }
+            }
         });
-        //$scope.control.refresh({ latitude: 40.7127, longitude: -74.0059 })
+
+        $http.get(jsonRoot + '/data/' + url + '/square.json').success(function(data) {
+            var squareData = {};
+            for (var i = 0; i < data.data.length; i++) {
+                if (typeof squareData[data.data[i].neighborhood] === 'undefined') {
+                    squareData[data.data[i].neighborhood] = { min: data.data[i].value, max: data.data[i].value}
+                } else {
+                    if (data.data[i].value < squareData[data.data[i].neighborhood].min) {
+                        squareData[data.data[i].neighborhood].min = data.data[i].value;
+                    }
+                    if (data.data[i].value > squareData[data.data[i].neighborhood].max) {
+                        squareData[data.data[i].neighborhood].max = data.data[i].value;
+                    } 
+                }
+                data.data[i] = {neighborhood: parseInt(data.data[i].neighborhood,10), square: parseInt(data.data[i].square,10), value: parseInt(data.data[i].value,10)}
+            }
+            var min = 999999999;
+            var max = -999999999;
+            for (var i = 0; i < data.data.length; i++) {
+                for (var j = 0; j < $scope.allSquares[data.data[i].neighborhood].squares.length; j++) {
+                    if (data.data[i].square == $scope.allSquares[data.data[i].neighborhood].squares[j].id) {
+                        $scope.allSquares[data.data[i].neighborhood].squares[j].fill = {color: getColor(Math.log2((data.data[i].value - squareData[data.data[i].neighborhood].min)/(squareData[data.data[i].neighborhood].max-squareData[data.data[i].neighborhood].min)+1)), opacity: 0.5};
+                        $scope.allSquares[data.data[i].neighborhood].squares[j].stroke = {color: '#000000', weight: 0, opacity: 1};
+                    }
+                }
+            }
+            console.log('Done')
+        });
     }
+
+    $http.get(jsonRoot + 'list.json').success(function(data) { 
+        $scope.list = data
+        console.log(data.default)
+        //$scope.loadJson(data.default)
+    });    
 }]);

@@ -7,8 +7,8 @@ with open('../webapp/json/squares.json','r') as fp:
 districts = [0]*600
 
 with open('squaresBigQuery.csv','w') as csvfile:
-	csvwriter = csv.writer(csvfile)
-	csvwriter.writerow(['id', 'neighborhood, center_lat, center_long'])
+	csvwriter = csv.writer(csvfile,lineterminator='\n')
+	csvwriter.writerow(['id', 'neighborhood', 'lat', 'long'])
 	for square in squaresJson['squares']:
 		row = [square['id'], square['neighborhood'], square['center_lat'], square['center_long']]
 		csvwriter.writerow(row)
