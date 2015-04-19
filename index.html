@@ -24,6 +24,7 @@
 		<div id="map_canvas" class='.angular-google-map-container'>
 	    	<ui-gmap-google-map center="map.center" zoom="map.zoom" options="map.options" control="control" bounds="map.bounds">
 	    		<ui-gmap-polygon ng-repeat="p in polygons track by p.id" path="p.path" fill="p.fill" stroke="p.stroke" static="true" visible="true" events="events" clickable="true"></ui-gmap-polygon>
+	    		<ui-gmap-polygon ng-repeat="p in squares track by p.id" path="p.path" fill="p.fill" stroke="p.stroke" static="true" visible="true"></ui-gmap-polygon>
 	    	</ui-gmap-google-map>
 		</div>
 	</div>

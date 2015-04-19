@@ -27,6 +27,11 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
     //Load polygons
     var jsonRoot = 'webapp/json/'
     $scope.polygons = []
+    $scope.squares = []
+
+    $http.get(jsonRoot + 'squaresByDistrict.json').success(function(data) {
+        $scope.allSquares = data.districts;
+    });
 
     $http.get(jsonRoot + 'community_districts.geojson').success(function(data) { 
         var id = 0;
@@ -98,7 +103,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
             }
             for (var i = 0; i < $scope.polygons.length; i++) {
                 if ($scope.polygons[i].cityid == id) {
-                    $scope.polygons[i].fill = {color: '#FF0000', opacity: 0.5};
+                    $scope.polygons[i].fill = {color: '#000000', opacity: 0};
                     for (var j = 0; j < $scope.polygons[i].path.length; j++) {
                         if ($scope.polygons[i].path[j].longitude > bounds.northeast.longitude) {
                             bounds.northeast.longitude = $scope.polygons[i].path[j].longitude;
@@ -115,6 +120,13 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                     }
                 }
             }
+
+            $scope.squares = $scope.allSquares[id].squares
+            for (var i = 0; i < $scope.squares.length; i++) {
+                $scope.squares[i].fill = {color: '#FF0000', opacity: 0.5};
+                $scope.squares[i].stroke = {color: '#000000', weight: 1, opacity: 1};
+            }
+
             $scope.map.bounds = bounds;
         }
     }
