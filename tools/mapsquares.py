@@ -1,9 +1,4 @@
-import sys
-import urllib.request
-import urllib.parse
 import json
-import polyline
-import csv
 import numpy as np
 
 # Check if point is in polygon
@@ -50,8 +45,9 @@ max_lat = 40.65
 min_long = -73.9
 max_long = -73.9
 for feature in districtsJson['features']:
-	if feature['geometry']['type'] is 'Polygon':
+	if feature['geometry']['type'] == 'Polygon':
 		for pos in feature['geometry']['coordinates'][0]:
+			print(pos)
 			if pos[1] < min_lat:
 				min_lat = pos[1]
 			if pos[1] > max_lat:
@@ -60,9 +56,10 @@ for feature in districtsJson['features']:
 				min_long = pos[0]
 			if pos[0] > max_long:
 				max_long = pos[0]
-	elif feature['geometry']['type'] is 'MultiPolygon':
+	elif feature['geometry']['type'] == 'MultiPolygon':
 		for polygon in feature['geometry']['coordinates']:
 			for pos in polygon[0]:
+				print(pos)
 				if pos[1] < min_lat:
 					min_lat = pos[1]
 				if pos[1] > max_lat:
@@ -77,27 +74,29 @@ max_lat = round(max_lat,3) + 0.0015
 min_long = round(min_long,3) - 0.0015
 max_long = round(max_long,3) + 0.0015
 
+print((min_lat,max_lat,min_long,max_long))
+
 squares = []
 square_id = 0;
-squaresArray
+
 for slat in np.arange(min_lat-lat_spacing,max_lat,lat_spacing):
 	for slong in np.arange(min_long-long_spacing,max_long,long_spacing):
 		for feature in districtsJson['features']:
 			numpts = 0	
-			if feature['geometry']['type'] is 'Polygon':
+			if feature['geometry']['type'] == 'Polygon':
 				# Check center only
 				if point_in_polygon(slong+(long_spacing/2),slat+(lat_spacing/2),feature['geometry']['coordinates'][0]):
 					numpts += 1
-			elif feature['geometry']['type'] is 'MultiPolygon':
+			elif feature['geometry']['type'] == 'MultiPolygon':
 				for polygon in feature['geometry']['coordinates']:
 					if point_in_polygon(slong+(long_spacing/2),slat+(lat_spacing/2),polygon[0]):
 						numpts += 1
 			if numpts >= 1:
-					squares.append({'id':square_id, 'min_lat': slat, 'max_lat': slat+lat_spacing, 'min_long': slong, 'max_long': slong+long_spacing, 'center_lat': slat+(lat_spacing/2), 'center_long': slong+(long_spacing/2) 'neighborhood': feature['properties']['BoroCD']})
+					squares.append({'id': square_id, 'min_lat': slat, 'max_lat': slat+lat_spacing, 'min_long': slong, 'max_long': slong+long_spacing, 'center_lat': slat+(lat_spacing/2), 'center_long': slong+(long_spacing/2), 'neighborhood': feature['properties']['BoroCD']})
 					square_id += 1
 					break
-with open('squares.json','w') as fp
-	json.dump({'squares': squaresArray},fp)
+with open('squares.json','w') as fp:
+	json.dump({'squares': squares},fp)
 
 # Make CSVs
 # print('Making CSV files')
