@@ -1,4 +1,4 @@
-data/
+/tools/data/
 __pycache__
 *.key
 keys/
