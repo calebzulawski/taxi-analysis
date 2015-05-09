@@ -172,7 +172,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
             var min = 999999999;
             var max = -999999999;
             for (var i = 0; i < data.data.length; i++) {
-                data.data[i] = {neighborhood: parseInt(data.data[i].neighborhood,10), value: parseInt(data.data[i].value,10)}
+                data.data[i] = {neighborhood: parseFloat(data.data[i].neighborhood,10), value: parseFloat(data.data[i].value,10)}
                 if (data.data[i].value < min) {
                     min = data.data[i].value;
                 }
@@ -200,9 +200,9 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                 square = data.data[i].square
                 value = data.data[i].value
                 data.data[i] = {
-                    neighborhood: parseInt(neighborhood,10),
-                    square: parseInt(square,10),
-                    value: parseInt(value,10)
+                    neighborhood: parseFloat(neighborhood,10),
+                    square: parseFloat(square,10),
+                    value: parseFloat(value,10)
                 };
                 if (typeof squareData[data.data[i].neighborhood] === 'undefined') {
                     squareData[data.data[i].neighborhood] = { min: data.data[i].value, max: data.data[i].value}

@@ -1,6 +1,7 @@
 {
 	"default" : "pu_count",
     "overlays": [
-    	{ "url": "pu_count", "title": "Pickup Heatmap"}
+    	{ "url": "pu_count", "title": "Pickup Heatmap"},
+    	{ "url": "pu_farepct", "title": "Pickup Fare Percent"}
     ]
 }
