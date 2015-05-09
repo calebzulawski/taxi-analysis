@@ -75,7 +75,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
         $scope.allSquares = data.districts;
     });
 
-    $http.get(jsonRoot + 'community_districts.geojson').success(function(data) { 
+    $http.get(jsonRoot + 'community_districts.geojson').success(function(data) {
         var id = 0;
         for (var i = 0; i < data.features.length; i++) {
             var item = data.features[i]
@@ -117,7 +117,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                 }
             }
         }
-    });  
+    });
 
     var regionEvents = {
         click: function(poly,eventName,model,args) {
@@ -192,7 +192,18 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
 
         $http.get(jsonRoot + '/data/' + url + '/square.json').success(function(data) {
             var squareData = {};
+            var neighborhood;
+            var square;
+            var value;
             for (var i = 0; i < data.data.length; i++) {
+                neighborhood = data.data[i].neighborhood
+                square = data.data[i].square
+                value = data.data[i].value
+                data.data[i] = {
+                    neighborhood: parseInt(neighborhood,10),
+                    square: parseInt(square,10),
+                    value: parseInt(value,10)
+                };
                 if (typeof squareData[data.data[i].neighborhood] === 'undefined') {
                     squareData[data.data[i].neighborhood] = { min: data.data[i].value, max: data.data[i].value}
                 } else {
@@ -201,16 +212,16 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                     }
                     if (data.data[i].value > squareData[data.data[i].neighborhood].max) {
                         squareData[data.data[i].neighborhood].max = data.data[i].value;
-                    } 
+                    }
                 }
-                data.data[i] = {neighborhood: parseInt(data.data[i].neighborhood,10), square: parseInt(data.data[i].square,10), value: parseInt(data.data[i].value,10)}
             }
             var min = 999999999;
             var max = -999999999;
             for (var i = 0; i < data.data.length; i++) {
                 for (var j = 0; j < $scope.allSquares[data.data[i].neighborhood].squares.length; j++) {
                     if (data.data[i].square == $scope.allSquares[data.data[i].neighborhood].squares[j].id) {
-                        $scope.allSquares[data.data[i].neighborhood].squares[j].fill = {color: getColor(Math.log2((data.data[i].value - squareData[data.data[i].neighborhood].min)/(squareData[data.data[i].neighborhood].max-squareData[data.data[i].neighborhood].min)+1)), opacity: 0.5};
+                        var setColorValue = Math.log2((data.data[i].value - squareData[data.data[i].neighborhood].min)/(squareData[data.data[i].neighborhood].max-squareData[data.data[i].neighborhood].min)+1);
+                        $scope.allSquares[data.data[i].neighborhood].squares[j].fill = {color: getColor(setColorValue), opacity: 0.5};
                         $scope.allSquares[data.data[i].neighborhood].squares[j].stroke = {color: '#000000', weight: 0, opacity: 1};
                     }
                 }
@@ -219,9 +230,9 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
         });
     }
 
-    $http.get(jsonRoot + 'list.json').success(function(data) { 
+    $http.get(jsonRoot + 'list.json').success(function(data) {
         $scope.list = data
         console.log(data.default)
         //$scope.loadJson(data.default)
-    });    
+    });
 }]);
