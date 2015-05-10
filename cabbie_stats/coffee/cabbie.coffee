@@ -1,3 +1,12 @@
-define ['jquery'], ($) ->
+define [
+    'jquery'
+    'react'
+    'text!extremeData'
+    'text!cabbieData'
+], ($, React, extremeDataRaw, cabbieDataRaw) ->
 
-    console.log "hello"    
+    extremes = JSON.parse extremeDataRaw
+    data = JSON.parse cabbieDataRaw
+    medallions = data.medallions
+
+    React.createClass

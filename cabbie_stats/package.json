@@ -1,0 +1,35 @@
+{
+  "name": "cabbie_stats",
+  "version": "1.0.0",
+  "description": "cabbie state - data science project",
+  "scripts": {
+    "test": "ls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calebzulawski/taxi-analysis"
+  },
+  "keywords": [
+    "taxi",
+    "data",
+    "cab",
+    "nyc",
+    "data",
+    "science"
+  ],
+  "author": "Caleb Zulawski, Ethan Lusterman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/calebzulawski/taxi-analysis/issues"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.4",
+    "coffee": "^1.0.0",
+    "coffee-react": "^3.2.0",
+    "jquery": "^2.1.4",
+    "react": "^0.13.3",
+    "require": "^2.4.18",
+    "require-cs": "^0.5.4",
+    "text": "git://github.com/requirejs/text.git"
+  }
+}
