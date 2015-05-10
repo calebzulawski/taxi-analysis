@@ -3,8 +3,8 @@
 ```
 cd <path/to/repo>
 cd cabbie_stats
-npm install
-coffee -o js/ -cw coffee/
+npm install  # you might need to install some dependencies with sudo npm install -g <dependency>
+cjsx -o js/ -cw coffee/
 ```
 
 And, in a new tab
