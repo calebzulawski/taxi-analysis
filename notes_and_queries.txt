@@ -1,0 +1,77 @@
+
+right now, we have:
+---
+1) heatmap showing # of rides in (1) neighborhood and (2) square
+
+we should add on:
+---
+(optional) 2) Where do people start/go on Friday and Saturday nights?
+    - pickups/dropoffs between friday 7pm-11pm and saturday 7pm-11pm
+(optional) 3) Where do people end up on Friday and Saturday nights?
+    - pickups/dropoffs between friday 11pm- saturday 4am and saturday 11pm-sunday 4am
+4) neighborhood 1 to neighborhood 2 - avg tip percent, avg tip amount, avg fare
+
+only credit cards, > $5, < $100
+-------
+SELECT float(tf_tip_amount) as t, count(*)
+FROM [taxi_dataset_final.trip_fare_labeled]
+WHERE float(tf_fare_amount) >= 5
+AND float(tf_fare_amount) <= 100
+AND tf_payment_type = "CRD"
+GROUP BY t
+ORDER BY t DESC
+LIMIT 100
+
+sketchy cabbies
+-------
+SELECT data_medallion, float(fare_tip_amount) AS t, data_pickup_datetime, data_dropoff_datetime, float(data_trip_time_in_secs)/60.0 AS minutes, data_passenger_count
+FROM [taxi_dataset_final.all_rides]
+ORDER BY t DESC
+LIMIT 100
+
+SELECT data_medallion, float(fare_tip_amount) AS t, data_pickup_datetime, data_dropoff_datetime, float(TIMESTAMP_TO_SEC(TIMESTAMP(data_dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(data_pickup_datetime)))/60.0 AS minutes,
+FROM [taxi_dataset_final.all_rides]
+WHERE float(TIMESTAMP_TO_SEC(TIMESTAMP(data_dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(data_pickup_datetime)))/60.0 > 600.0
+GROUP BY data_medallion
+LIMIT 100
+
+
+CABBIE STATS
+------------------------
+
+SELECT
+ AVG(float(trip_distance)*3600.0/float((TIMESTAMP_TO_SEC(TIMESTAMP(dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(pickup_datetime))))) as avgSpeed,
+ COUNT(*) as numberOfTrips,
+ AVG(float(trip_distance)) as avgDistance
+FROM [taxi_dataset.trip_data]
+WHERE float(trip_distance) > 0.01
+AND float((TIMESTAMP_TO_SEC(TIMESTAMP(dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(pickup_datetime)))) > 60.0
+AND float((TIMESTAMP_TO_SEC(TIMESTAMP(dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(pickup_datetime)))) < 15000.0
+GROUP BY medallion
+
+SELECT
+ medallion,
+ COUNT(*) as numberOfTrips,
+ AVG(float(tip_amount)/float(fare_amount))*100.0 AS avgTipPercent,
+ AVG(float(tip_amount)) AS avgTip,
+ AVG(float(fare_amount)) AS avgFare,
+FROM [taxi_dataset.trip_fare]
+WHERE float(total_amount) < 1000.0
+AND float(fare_amount) >= 3.50
+GROUP BY medallion
+
+SELECT MAX(t_avgSpeed) AS maxAvgSpeed,
+  MAX(t_numberOfTrips) AS maxNumTripsT,
+  MAX(t_avgDistance) AS maxAvgDistance,
+  MAX(f_numberOfTrips) AS maxNumTripsF,
+  MAX(f_avgTipPercent) AS maxAvgTipPercent,
+  MAX(f_avgTip) AS maxAvgTip,
+  MAX(f_avgFare) AS maxAvgFare,
+  MIN(t_avgSpeed) AS minAvgSpeed,
+  MIN(t_numberOfTrips) AS minNumTripsT,
+  MIN(t_avgDistance) AS minAvgDistance,
+  MIN(f_numberOfTrips) AS minNumTripsF,
+  MIN(f_avgTipPercent) AS minAvgTipPercent,
+  MIN(f_avgTip) AS minAvgTip,
+  MIN(f_avgFare) AS minAvgFare
+ FROM [cabbie_stats.total_stats]
