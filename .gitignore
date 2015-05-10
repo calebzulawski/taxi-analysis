@@ -6,3 +6,4 @@ keys/
 *.exe
 mongoose
 *.pyc
+cabbie_stats/js
