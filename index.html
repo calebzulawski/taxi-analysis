@@ -17,6 +17,7 @@
 			<div ng-repeat="choice in list.overlays">
     			<a href="" ng-click="loadJson(choice.url)">{{choice.title}}</a>
 			</div>
+			{{loading}}
 			<div>
 				{{currentTitle}}
 			</div>
