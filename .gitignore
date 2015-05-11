@@ -8,3 +8,4 @@ mongoose
 *.pyc
 cabbie_stats/js
 node_modules
+*.log
