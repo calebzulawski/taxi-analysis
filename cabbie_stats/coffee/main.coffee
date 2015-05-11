@@ -5,6 +5,7 @@ require {
         jquery: '../node_modules/jquery/dist/jquery.min'
         react: '../node_modules/react/dist/react.min'
         text: '../node_modules/text/text'
+        crypto: '../node_modules/crypto/md5'
 
         # modules
         CabbieStats: 'cabbie'
@@ -12,4 +13,5 @@ require {
         # data files
         cabbieData: '../data/cabbies_obj.json'
         extremeData: '../data/extremes.json'
+        infoData: '../data/info.json'
 }
