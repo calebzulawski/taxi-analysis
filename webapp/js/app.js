@@ -52,6 +52,8 @@ angular.module('mapApp').config(function(uiGmapGoogleMapApiProvider) {
 })
 
 angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($scope, $http) {
+    $scope.loading = ''
+
     //Set starting parameters for the map
     $scope.map = {
         center: { latitude: 40.7127, longitude: -74.0059 },
@@ -73,6 +75,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
 
     $http.get(jsonRoot + 'squaresByDistrict.json').success(function(data) {
         $scope.allSquares = data.districts;
+        console.log(data.districts)
     });
 
     $http.get(jsonRoot + 'community_districts.geojson').success(function(data) {
@@ -191,6 +194,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
         });
 
         $http.get(jsonRoot + '/data/' + url + '/square.json').success(function(data) {
+            $scope.loading = 'Loading...'
             var squareData = {};
             var neighborhood;
             var square;
@@ -217,6 +221,16 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
             }
             var min = 999999999;
             var max = -999999999;
+
+            //FIRST PASS TO CLEAR SQUARES
+            for (var i = 0; i < data.data.length; i++) {
+                for (var j = 0; j < $scope.allSquares[data.data[i].neighborhood].squares.length; j++) {
+                    $scope.allSquares[data.data[i].neighborhood].squares[j].fill = {color: '#000000', opacity: 0};
+                    $scope.allSquares[data.data[i].neighborhood].squares[j].stroke = {color: '#000000', weight: 0, opacity: 0};
+                }
+            }
+
+            //SECOND PASS TO SET SQUARES
             for (var i = 0; i < data.data.length; i++) {
                 for (var j = 0; j < $scope.allSquares[data.data[i].neighborhood].squares.length; j++) {
                     if (data.data[i].square == $scope.allSquares[data.data[i].neighborhood].squares[j].id) {
@@ -226,7 +240,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
                     }
                 }
             }
-            console.log('Done')
+            $scope.loading = 'Loaded.'
         });
     }
 
