@@ -3,7 +3,7 @@ require {
     paths:
         # dependencies
         jquery: '../node_modules/jquery/dist/jquery.min'
-        react: '../node_modules/react/dist/react.min'
+        react: '../node_modules/react/dist/react'
         text: '../node_modules/text/text'
         crypto: '../node_modules/crypto/md5'
 

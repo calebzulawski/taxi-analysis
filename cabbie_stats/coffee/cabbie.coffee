@@ -8,6 +8,7 @@ define [
 ], ($, React, Crypto, extremeDataRaw, cabbieDataRaw, infoDataRaw) ->
 
     SLIDER_CONTAINER = '.slider-container'
+    CONTAINER = '.container'
 
     Slider = React.createClass
         getInitialState: ->
@@ -17,14 +18,11 @@ define [
                 max: @props.max
                 step: @props.step
                 label: @props.label
-
-
         render: ->
             <div className="slider">
-                <div className="label">{@props.label}: <span class="slider-value">{@state.value}</span></div>
+                <div className="label">{@props.label}: <span className="slider-value">{@state.value}</span></div>
                 <input type="range" min={@props.min} max={@props.max} step={@props.step} onChange={this.handleChange}/>
             </div>
-
         handleChange: (event) ->
             @setState {value: event.target.value}
 
@@ -69,12 +67,12 @@ define [
 
     Results = React.createClass
         render: ->
-            resultTitle = "For Cabbie with Medallion # #{@props.medallion}:"
             results = []
             for key, val of @props.labels
-                results.push {label: val, value: @props.fields[key]}
+                if @props.fields[key]
+                    results.push {label: val, value: @props.fields[key]}
             <div className="results">
-                <h3 className="resultTitle">{resultTitle}</h3>
+                <h3 className="resultTitle">{@props.resultTitle}</h3>
                 <ul>{
                     results.map (result) ->
                         <li>{result.label}: <span className="value">{result.value.toFixed(2)}</span></li>
@@ -82,17 +80,23 @@ define [
                 </ul>
             </div>
 
-    createResults = (fields, medallion, container='.container') ->
-        $(container).append "<div class='resultsList'>"
+    createResults = (fields, medallion, resultTitle, parent=CONTAINER, container='resultsList') ->
+        $(parent).append "<div class='#{container}'>"
         textLabels =
+            total: "Your weighted rating"
             agility: "Agility"
             endurance: "Endurance"
             experience: "Experience"
             satisfaction: "Satisfaction"
-            total: "Your weighted rating"
+            f_avgFare: "Average Fare ($)"
+            f_avgTip: "Average Tip ($)"
+            f_avgTipPercent: "Average Tip (%)"
+            f_numberOfTrips: "# of Trips (2013)"
+            t_avgDistance: "Average Distance/Trip (mi)"
+            t_avgSpeed: "Average Speed (mph)"
         React.render(
-            <Results fields={fields} labels={textLabels} medallion={medallion} />,
-            $("#{container} > div.resultsList").get(0)
+            <Results fields={fields} labels={textLabels} medallion={medallion} resultTitle={resultTitle} />,
+            $(".#{container}").get(0)
         )
 
     submitFunc = () ->
@@ -118,6 +122,7 @@ define [
             @sliderExp = createSlider 0, 1, .01, "Experience"
             @sliderSat = createSlider 0, 1, .01, "Satisfaction"
             @buttonSubmit = createButton "Go!", submitFunc
+            # @avgResults = createResults @averages, null, '.header', 'avgResults'
 
         getFields: ->
             fields =
@@ -128,11 +133,17 @@ define [
                 experience: parseFloat @sliderExp.state.value
                 satisfaction: parseFloat @sliderSat.state.value
 
-        submit: ->
-            fields = @getFields()
-            console.log fields.md5
-            data = @medallions[fields.md5]
-            info = @info[fields.medallion]
+        mergeCabbieResults: (cabbieData, ratings) ->
+            numberData = {}
+            for k, v of cabbieData
+                i = parseFloat v
+                if isNaN i
+                    numberData[k] = v
+                else
+                    numberData[k] = i
+            $.extend {}, ratings, numberData
+
+        generateRatings: (data, fields) ->
             agilityRating = (@numCabbies - data.pctSpeed + 1) / @numCabbies
             enduranceRating = (@numCabbies - data.pctAvgDistance + 1) / @numCabbies
             experienceRating = (@numCabbies - data.pctNumberOfTrips + 1) / @numCabbies
@@ -145,10 +156,16 @@ define [
                 endurance: enduranceRating
                 experience: experienceRating
                 satisfaction: satisfactionRating
-            console.log ratings
-            @results = createResults ratings, fields.medallion
 
 
+        submit: ->
+            fields = @getFields()
+            data = @medallions[fields.md5]
+            info = @info[fields.medallion]
+            ratings = @generateRatings(data, fields)
+            resultsData = @mergeCabbieResults(data, ratings)
+            resultTitle = "Results for Medallion # #{fields.medallion}"
+            @results = createResults resultsData, fields.medallion, resultTitle
 
     cabbieInst = new Cabbie()
 

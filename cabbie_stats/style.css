@@ -43,7 +43,10 @@ table {
 }
 
 /* end reset */
-
+html {
+    max-width: 768px;
+    margin: auto;
+}
 body {
     font-family: 'Palanquin', sans-serif;
     background-color: yellow;
@@ -70,6 +73,8 @@ li {
 .value {
     font-weight: 700;
 }
+
+.description
 
 @media screen and (max-width: 768px) {
     .slider {
