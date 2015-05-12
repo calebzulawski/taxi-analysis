@@ -21,34 +21,35 @@ define [
 
         render: ->
             <div className="slider">
-                <div className="label">{@props.label}</div>
+                <div className="label">{@props.label}: <span class="slider-value">{@state.currentValue}</span></div>
                 <input type="range" min={@props.min} max={@props.max} step={@props.step} onChange={this.handleChange}/>
             </div>
-        handleChange: (event) ->
-            @setState {value: event.target.value}
 
-    createSlider = (min, max, step, label, container='.slider-container') ->
+        handleChange: (event) ->
+            @setState {currentValue: event.target.value}
+
+    createSlider = (min, max, step, label, container=SLIDER_CONTAINER) ->
         $(container).append("<div class='slider'>")
         slider = React.render(
-            <Slider min={min}, max={max}, step={step} label={label}/>,
+            <Slider min={min}, max={max}, step={step} value={0.5} label={label}/>,
             $("#{container} > div.slider:last-child()").get(0)
         )
-        slider.setState {value: 0.5}
-        slider
 
     Textbox = React.createClass
         render: ->
+            label = "Medallion #"
             <div className="Textbox">
+                <h2 className="label">{label}</h2>
                 <input type="text" value={@props.value} placeholder={@props.placeholder} onChange={this.handleChange}/>
             </div>
         handleChange: (event) ->
             @setState {value: event.target.value}
 
-    createTextbox = (placeholder, container='.slider-container') ->
-        $(container).append("<div class='textbox'>")
+    createTextbox = (placeholder, container='.container') ->
+        $(container).prepend("<div class='textbox'>")
         textbox = React.render(
             <Textbox placeholder={placeholder}/>,
-            $("#{container} > div.textbox:last-child()").get(0)
+            $("#{container} > div.textbox").get(0)
         )
         textbox.setState {value: ""}
         textbox
@@ -59,7 +60,7 @@ define [
                 <input type="button" value={@props.value} onClick={@props.onClick}/>
             </div>
 
-    createButton = (value, onClick, container='.slider-container') ->
+    createButton = (value, onClick, container=SLIDER_CONTAINER) ->
         $(container).append("<div class='button'>")
         React.render(
             <Button value={value} onClick={onClick}/>,
@@ -69,7 +70,6 @@ define [
     submitFunc = () ->
         cabbieInst.submit()
 
-    # $
 
     class Cabbie
 
@@ -98,7 +98,7 @@ define [
                 satisfaction: @sliderSat.state.value
 
         submit: ->
-            fields = this.getFields()
+            fields = @getFields()
             data = @medallions[fields.md5]
             info = @info[fields.medallion]
             agilityRating = (data.t_avgSpeed - @extremes.minAvgSpeed) / (@extremes.maxAvgSpeed - @extremes.minAvgSpeed)
@@ -107,7 +107,7 @@ define [
             satisfactionRating = (data.f_avgTipPercent - @extremes.minAvgTipPercent) / (@extremes.maxAvgTipPercent - @extremes.minAvgTipPercent)
             rating = fields.agility * agilityRating + fields.endurance * enduranceRating + fields.experience * experienceRating + fields.satisfaction * satisfactionRating
             rating = rating / (fields.agility + fields.endurance + fields.experience + fields.satisfaction)
-            ratings = 
+            ratings =
                 total: rating
                 agility: agilityRating
                 endurance: enduranceRating

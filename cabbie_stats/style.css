@@ -1,0 +1,18 @@
+body {
+    font-family: 'Palanquin', sans-serif;
+    background-color: yellow;
+}
+
+.title {
+}
+
+body > div {
+    text-align: center;
+    margin: auto;
+}
+.slider-container {
+    font-weight: 600;
+}
+.slider {
+    display: inline-block;
+}
