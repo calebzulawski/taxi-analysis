@@ -18,13 +18,15 @@
         };
       },
       render: function() {
+        var displayNumber;
+        displayNumber = (parseInt(parseFloat(this.state.value) * 100)) + "%";
         return React.createElement("div", {
           "className": "slider"
         }, React.createElement("div", {
           "className": "label"
         }, this.props.label, ": ", React.createElement("span", {
           "className": "slider-value"
-        }, this.state.value)), React.createElement("input", {
+        }, displayNumber)), React.createElement("input", {
           "type": "range",
           "min": this.props.min,
           "max": this.props.max,
@@ -136,7 +138,7 @@
     createResults = function(fields, medallion, resultTitle, parent, container) {
       var textLabels;
       if (parent == null) {
-        parent = CONTAINER;
+        parent = '#result';
       }
       if (container == null) {
         container = 'resultsList';
@@ -163,7 +165,8 @@
       }), $("." + container).get(0));
     };
     submitFunc = function() {
-      return cabbieInst.submit();
+      cabbieInst.submit();
+      return window.location.href = "#result";
     };
     Cabbie = (function() {
       function Cabbie() {

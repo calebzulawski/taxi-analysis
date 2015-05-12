@@ -19,8 +19,9 @@ define [
                 step: @props.step
                 label: @props.label
         render: ->
+            displayNumber = "#{parseInt(parseFloat(@state.value) * 100)}%"
             <div className="slider">
-                <div className="label">{@props.label}: <span className="slider-value">{@state.value}</span></div>
+                <div className="label">{@props.label}: <span className="slider-value">{displayNumber}</span></div>
                 <input type="range" min={@props.min} max={@props.max} step={@props.step} onChange={this.handleChange}/>
             </div>
         handleChange: (event) ->
@@ -81,7 +82,7 @@ define [
             </div>
 
     createResults = (fields, medallion, resultTitle, parent=CONTAINER, container='resultsList') ->
-        $(parent).append "<div class='#{container}'>"
+        $(parent).append "<div id="result" class='#{container}'>"
         textLabels =
             total: "Your weighted rating"
             agility: "Agility"
@@ -101,6 +102,7 @@ define [
 
     submitFunc = () ->
         cabbieInst.submit()
+        window.location.href = "#result"
 
 
     class Cabbie
