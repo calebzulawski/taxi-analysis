@@ -12,7 +12,7 @@ define [
     Slider = React.createClass
         getInitialState: ->
             state =
-                currentValue: @props.value
+                value: @props.value
                 min: @props.min
                 max: @props.max
                 step: @props.step
@@ -21,12 +21,12 @@ define [
 
         render: ->
             <div className="slider">
-                <div className="label">{@props.label}: <span class="slider-value">{@state.currentValue}</span></div>
+                <div className="label">{@props.label}: <span class="slider-value">{@state.value}</span></div>
                 <input type="range" min={@props.min} max={@props.max} step={@props.step} onChange={this.handleChange}/>
             </div>
 
         handleChange: (event) ->
-            @setState {currentValue: event.target.value}
+            @setState {value: event.target.value}
 
     createSlider = (min, max, step, label, container=SLIDER_CONTAINER) ->
         $(container).append("<div class='slider'>")
@@ -67,6 +67,33 @@ define [
             $("#{container} > div.button:last-child()").get(0)
         )
 
+    Results = React.createClass
+        render: ->
+            resultTitle = "For Cabbie with Medallion # #{@props.medallion}:"
+            results = []
+            for key, val of @props.labels
+                results.push {label: val, value: @props.fields[key]}
+            <div className="results">
+                <h3 className="resultTitle">{resultTitle}</h3>
+                <ul>{
+                    results.map (result) ->
+                        <li>{result.label}: <span className="value">{result.value.toFixed(2)}</span></li>
+                    }
+                </ul>
+            </div>
+
+    createResults = (fields, medallion, container='.container') ->
+        $(container).append "<div class='resultsList'>"
+        textLabels =
+            agility: "Agility"
+            endurance: "Endurance"
+            experience: "Experience"
+            satisfaction: "Satisfaction"
+        React.render(
+            <Results fields={fields} labels={textLabels} medallion={medallion} />,
+            $("#{container} > div.resultsList").get(0)
+        )
+
     submitFunc = () ->
         cabbieInst.submit()
 
@@ -80,7 +107,9 @@ define [
             @info = JSON.parse infoDataRaw
             @medallions = @data.medallions
             @numCabbies = Object.keys(@medallions).length - 1
+            @initializeComponents()
 
+        initializeComponents: =>
             # initialize sliders
             @textMed = createTextbox "Enter Medallion #..."
             @sliderAgil = createSlider 0, 1, .01, "Agility"
@@ -93,10 +122,10 @@ define [
             fields =
                 medallion: @textMed.state.value.toUpperCase()
                 md5: Crypto.hex_md5(@textMed.state.value.toUpperCase()).toUpperCase()
-                agility: @sliderAgil.state.value
-                endurance: @sliderEnd.state.value
-                experience: @sliderExp.state.value
-                satisfaction: @sliderSat.state.value
+                agility: parseFloat @sliderAgil.state.value
+                endurance: parseFloat @sliderEnd.state.value
+                experience: parseFloat @sliderExp.state.value
+                satisfaction: parseFloat @sliderSat.state.value
 
         submit: ->
             fields = @getFields()
@@ -116,6 +145,8 @@ define [
                 experience: experienceRating
                 satisfaction: satisfactionRating
             console.log ratings
+            @results = createResults ratings, fields.medallion
+
 
 
     cabbieInst = new Cabbie()
