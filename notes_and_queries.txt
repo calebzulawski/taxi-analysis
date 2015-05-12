@@ -40,11 +40,13 @@ CABBIE STATS
 ------------------------
 
 SELECT
+ medallion,
  AVG(float(trip_distance)*3600.0/float((TIMESTAMP_TO_SEC(TIMESTAMP(dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(pickup_datetime))))) as avgSpeed,
  COUNT(*) as numberOfTrips,
  AVG(float(trip_distance)) as avgDistance
 FROM [taxi_dataset.trip_data]
 WHERE float(trip_distance) > 0.01
+AND float(trip_distance) < 50
 AND float((TIMESTAMP_TO_SEC(TIMESTAMP(dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(pickup_datetime)))) > 60.0
 AND float((TIMESTAMP_TO_SEC(TIMESTAMP(dropoff_datetime))-TIMESTAMP_TO_SEC(TIMESTAMP(pickup_datetime)))) < 15000.0
 GROUP BY medallion
@@ -59,6 +61,11 @@ FROM [taxi_dataset.trip_fare]
 WHERE float(total_amount) < 1000.0
 AND float(fare_amount) >= 3.50
 GROUP BY medallion
+
+SELECT t.medallion, t.avgSpeed, t.numberOfTrips, t.avgDistance, f.numberOfTrips, f.avgTipPercent, f.avgTip, f.avgFare
+FROM [cabbie_stats.fare_stats] AS f
+INNER JOIN [cabbie_stats.trip_stats] AS t
+ON f.medallion = t.medallion;
 
 SELECT MAX(t_avgSpeed) AS maxAvgSpeed,
   MAX(t_numberOfTrips) AS maxNumTripsT,
@@ -75,3 +82,21 @@ SELECT MAX(t_avgSpeed) AS maxAvgSpeed,
   MIN(f_avgTip) AS minAvgTip,
   MIN(f_avgFare) AS minAvgFare
  FROM [cabbie_stats.total_stats]
+
+
+
+ CABBIE STATS PERCENTILES
+ ----------------------------
+
+SELECT total.t_medallion as t_medallion, t_avgSpeed, t_numberOfTrips, t_avgDistance, f_numberOfTrips, f_avgTipPercent, f_avgTip, f_avgFare,
+speed.f0_ as pctSpeed, trips.f0_ as pctNumberOfTrips, dist.f0_ as pctAvgDistance, tip.f0_ as pctAvgTip
+FROM [cabbie_stats.total_stats] as total
+INNER JOIN [cabbie_stats.pct_speed_2] as speed
+ON total.t_medallion = speed.t_medallion
+INNER JOIN [cabbie_stats.pct_numtrips_2] as trips
+ON total.t_medallion = trips.t_medallion
+INNER JOIN [cabbie_stats.pct_dist_2] as dist
+ON total.t_medallion = dist.t_medallion
+INNER JOIN [cabbie_stats.pct_tip_2] as tip
+ON total.t_medallion = tip.t_medallion
+LIMIT 20

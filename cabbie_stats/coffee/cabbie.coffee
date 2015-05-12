@@ -79,6 +79,7 @@ define [
             @data = JSON.parse cabbieDataRaw
             @info = JSON.parse infoDataRaw
             @medallions = @data.medallions
+            @numCabbies = Object.keys(@medallions).length - 1
 
             # initialize sliders
             @textMed = createTextbox "Enter Medallion #..."
@@ -99,12 +100,13 @@ define [
 
         submit: ->
             fields = @getFields()
+            console.log fields.md5
             data = @medallions[fields.md5]
             info = @info[fields.medallion]
-            agilityRating = (data.t_avgSpeed - @extremes.minAvgSpeed) / (@extremes.maxAvgSpeed - @extremes.minAvgSpeed)
-            enduranceRating = (data.t_avgDistance - @extremes.minAvgDistance) / (@extremes.maxAvgDistance - @extremes.minAvgDistance)
-            experienceRating = (data.t_numberOfTrips - @extremes.minNumTripsT) / (@extremes.maxNumTripsT - @extremes.minNumTripsT)
-            satisfactionRating = (data.f_avgTipPercent - @extremes.minAvgTipPercent) / (@extremes.maxAvgTipPercent - @extremes.minAvgTipPercent)
+            agilityRating = (@numCabbies - data.pctSpeed + 1) / @numCabbies
+            enduranceRating = (@numCabbies - data.pctAvgDistance + 1) / @numCabbies
+            experienceRating = (@numCabbies - data.pctNumberOfTrips + 1) / @numCabbies
+            satisfactionRating = (@numCabbies - data.pctAvgTip + 1) / @numCabbies
             rating = fields.agility * agilityRating + fields.endurance * enduranceRating + fields.experience * experienceRating + fields.satisfaction * satisfactionRating
             rating = rating / (fields.agility + fields.endurance + fields.experience + fields.satisfaction)
             ratings =
@@ -113,7 +115,7 @@ define [
                 endurance: enduranceRating
                 experience: experienceRating
                 satisfaction: satisfactionRating
-            console.log(ratings)
+            console.log ratings
 
 
     cabbieInst = new Cabbie()
