@@ -89,6 +89,7 @@ define [
             endurance: "Endurance"
             experience: "Experience"
             satisfaction: "Satisfaction"
+            total: "Your weighted rating"
         React.render(
             <Results fields={fields} labels={textLabels} medallion={medallion} />,
             $("#{container} > div.resultsList").get(0)
