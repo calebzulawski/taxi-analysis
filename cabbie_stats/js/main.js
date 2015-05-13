@@ -10,7 +10,7 @@
       d3: '../node_modules/d3/d3',
       CabbieStats: 'cabbie',
       CabbiePlots: 'cabbiePlot',
-      EthanVisualization: 'ethan',
+      calendarViz: 'calendarViz',
       calendars: 'calendars',
       neighborhoods: 'neighborhoods',
       cabbieData: '../data/cabbies_obj.json',

@@ -3,11 +3,10 @@ define [
     'react'
     'crypto'
     'CabbiePlots'
-    'ethan'
     'text!extremeData'
     'text!cabbieData'
     'text!infoData'
-], ($, React, Crypto, CabbiePlots, Ethan, extremeDataRaw, cabbieDataRaw, infoDataRaw) ->
+], ($, React, Crypto, CabbiePlots, extremeDataRaw, cabbieDataRaw, infoDataRaw) ->
 
     SLIDER_CONTAINER = '.slider-container'
     CONTAINER = '.container'

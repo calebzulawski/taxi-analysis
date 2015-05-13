@@ -26,8 +26,8 @@
     var projection = d3.geo.azimuthal()
         .mode("equidistant")
         .origin([-74, 40])
-        .scale(25000)
-        .translate([640, 720]);
+        .scale(70000)
+        .translate([640, 1200]);
 
     var path = d3.geo.path()
         .projection(projection);
@@ -56,32 +56,32 @@
           .attr("d", path);
     });
 
-    d3.csv(baseUrl + "flights-airport.csv", function(flights) {
+    d3.csv(baseUrl + "trip_count.csv", function(flights) {
       var linksByOrigin = {},
-          countByAirport = {},
-          locationByAirport = {},
+          countByNeighborhood = {},
+          locationByNeighborhood = {},
           positions = [];
 
       var arc = d3.geo.greatArc()
-          .source(function(d) { return locationByAirport[d.source]; })
-          .target(function(d) { return locationByAirport[d.target]; });
+          .source(function(d) { return locationByNeighborhood[d.source]; })
+          .target(function(d) { return locationByNeighborhood[d.target]; });
 
       flights.forEach(function(flight) {
         var origin = flight.origin,
             destination = flight.destination,
             links = linksByOrigin[origin] || (linksByOrigin[origin] = []);
         links.push({source: origin, target: destination});
-        countByAirport[origin] = (countByAirport[origin] || 0) + 1;
-        countByAirport[destination] = (countByAirport[destination] || 0) + 1;
+        countByNeighborhood[origin] = (countByNeighborhood[origin] || 0) + 1;
+        countByNeighborhood[destination] = (countByNeighborhood[destination] || 0) + 1;
       });
 
-      d3.csv(baseUrl + "airports.csv", function(airports) {
+      d3.csv(baseUrl + "neighborhoods.csv", function(neighborhoods) {
 
         // Only consider airports with at least one flight.
-        airports = airports.filter(function(airport) {
-          if (countByAirport[airport.iata]) {
-            var location = [+airport.longitude, +airport.latitude];
-            locationByAirport[airport.iata] = location;
+        neighborhoods = neighborhoods.filter(function(neighborhood) {
+          if (countByNeighborhood[neighborhood.id]) {
+            var location = [neighborhood.longitude, +neighborhood.latitude];
+            locationByNeighborhood[neighborhood.id] = location;
             positions.push(projection(location));
             return true;
           }
@@ -91,7 +91,7 @@
         var polygons = d3.geom.voronoi(positions);
 
         var g = cells.selectAll("g")
-            .data(airports)
+            .data(neighborhoods)
           .enter().append("svg:g");
 
         g.append("svg:path")
@@ -100,18 +100,18 @@
             .on("mouseover", function(d, i) { d3.select("h2 span").text(d.name); });
 
         g.selectAll("path.arc")
-            .data(function(d) { return linksByOrigin[d.iata] || []; })
+            .data(function(d) { return linksByOrigin[d.id] || []; })
           .enter().append("svg:path")
             .attr("class", "arc")
             .attr("d", function(d) { return path(arc(d)); });
 
         circles.selectAll("circle")
-            .data(airports)
+            .data(neighborhoods)
           .enter().append("svg:circle")
             .attr("cx", function(d, i) { return positions[i][0]; })
             .attr("cy", function(d, i) { return positions[i][1]; })
-            .attr("r", function(d, i) { return Math.sqrt(countByAirport[d.iata]); })
-            .sort(function(a, b) { return countByAirport[b.iata] - countByAirport[a.iata]; });
+            .attr("r", function(d, i) { return Math.sqrt(countByNeighborhood[d.id]); })
+            .sort(function(a, b) { return countByNeighborhood[b.id] - countByNeighborhood[a.id]; });
       });
     });
 </script>
