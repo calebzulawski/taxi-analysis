@@ -140,7 +140,7 @@ circle {
 
 #inputDiv {
   float: left;
-  width: 100px;
+  width: 150px;
 }
 
 #svgDiv {
@@ -151,5 +151,13 @@ circle {
   float: right;
   width: 100px;
   height: 100%;
+  font-size: 12px;
+}
+
+#sortForm {
+  font-size: 12px;
+}
+
+#label {
   font-size: 12px;
 }

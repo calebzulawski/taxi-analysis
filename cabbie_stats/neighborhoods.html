@@ -15,7 +15,29 @@
 <body>
 
 <div id="inputDiv">
-	<input id="numLinks" type="number" value="5" min="1" max="70"/>
+	<label id="label">Number of links to show:</label><input id="numLinks" type="number" value="5" min="1" max="70"/>
+	<select id="typeSelect">
+  		<option value="count">Trip Count</option>
+  		<option value="avgFare">Average Fare ($)</option>
+  		<option value="avgTolls">Average Toll Amount ($)</option>
+  		<option value="avgTip">Average Tip ($)</option>
+  		<option value="avgTipPct">Average Tip Percent (%)</option>
+  		<option value="avgTip">Average Tip ($)</option>
+  		<option value="totalFare">Total Fares ($)</option>
+  		<option value="totalTips">Total Tips ($)</option>
+  		<option value="totalTolls">Total Tolls ($)</option>
+	</select>
+	<select id="paySelect">
+	  	<option value="trip_count_total.csv">Show All Trips</option>
+  		<option value="trip_count_cash.csv">Show Cash Trips Only</option>
+  		<option value="trip_count_card.csv">Show Cards Trips Only</option>
+	</select>
+	<form id="sortForm">
+	<input type="radio" id="sortHigh" name="sort" value="high" checked>Show highest
+	<br>
+	<input type="radio" id="sortLow" name="sort" value="low">Show lowest
+	</form>
+
 	<div id="sourceDiv"></div>
 </div>
 
@@ -47,7 +69,10 @@
     }
 
     reloadMap = function() {
+      var paySelect = document.getElementById("paySelect").value
+      var selectedType = document.getElementById("typeSelect").value
       document.getElementById("svgDiv").innerHTML = ""
+      var sortType = document.getElementById("sortHigh").checked
       var projection = d3.geo.azimuthal()
           .mode("equidistant")
           .origin([-74, 40])
@@ -81,7 +106,7 @@
           .attr("d", path);
       });
 
-      d3.csv(baseUrl + "trip_count.csv", function(rides) {
+      d3.csv(baseUrl + paySelect, function(rides) {
         var linksByOrigin = {},
             countByNeighborhood = {},
             locationByNeighborhood = {},
@@ -99,18 +124,23 @@
           var maxVals = []
           rides.forEach(function(ride2) {
             if(ride.origin == ride2.origin) {
-              maxVals.push(ride2.count);
+              maxVals.push(ride2[selectedType]);
             }
           });
-          maxVals.sort(function(a, b){return b-a});
+          if(sortType){
+          	maxVals.sort(function(a, b){return b-a});
+          }
+          else
+          {
+          	maxVals.sort(function(a, b){return a-b});
+          }
           maxVals = maxVals.slice(0,linksInput.value);
-          if(maxVals.indexOf(ride.count) > -1) {
+          if(maxVals.indexOf(ride[selectedType]) > -1) {
             var origin = ride.origin,
               destination = ride.destination,
               links = linksByOrigin[origin] || (linksByOrigin[origin] = []);
             links.push({source: origin, target: destination});
-            displayData[origin][destination] = ride.count;
-            console.log(displayData);
+            displayData[origin][destination] = ride[selectedType];
             countByNeighborhood[origin] = (countByNeighborhood[origin] || 0) + 1;
             countByNeighborhood[destination] = (countByNeighborhood[destination] || 0) + 1;
           }
@@ -162,6 +192,15 @@
     //DOM stuff
     linksInput = document.getElementById("numLinks");
     linksInput.onchange=function(){reloadMap()};
+
+    selectInput = document.getElementById("typeSelect");
+    selectInput.onchange=function(){reloadMap()};
+
+    sortInput = document.getElementById("sortForm");
+    sortInput.onchange=function(){reloadMap()};
+
+    payInput = document.getElementById("paySelect");
+    payInput.onChange=function(){reloadMap()};
 
 </script>
 </body>
