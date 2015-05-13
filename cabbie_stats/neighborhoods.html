@@ -19,7 +19,7 @@
 	<div id="sourceDiv"></div>
 </div>
 
-<div id="outputDiv">HI</div>
+<div id="outputDiv"></div>
 
 <div id="svgDiv"></div>
 
@@ -37,8 +37,13 @@
     	cd_names = data;
     });
 
-    updateData = function(d) {
+    updateData = function(d, displayData) {
     	document.getElementById("sourceDiv").innerHTML = d.id + "<br>" + cd_names[d.id];
+    	output = "";
+    	for (var key in displayData[d.id]) {
+    		output += key + "<br>" + cd_names[d.id] + "<br>" + displayData[d.id][key] +"<br><br>";
+    	}
+    	document.getElementById("outputDiv").innerHTML = output;
     }
 
     reloadMap = function() {
@@ -76,7 +81,6 @@
           .attr("d", path);
       });
 
-
       d3.csv(baseUrl + "trip_count.csv", function(rides) {
         var linksByOrigin = {},
             countByNeighborhood = {},
@@ -87,7 +91,11 @@
             .source(function(d) { return locationByNeighborhood[d.source]; })
             .target(function(d) { return locationByNeighborhood[d.target]; });
 
+        var displayData = {};
         rides.forEach(function(ride) {
+       	  if(! displayData[ride.origin]){
+       	  	displayData[ride.origin] = {};
+ 		  };
           var maxVals = []
           rides.forEach(function(ride2) {
             if(ride.origin == ride2.origin) {
@@ -101,6 +109,8 @@
               destination = ride.destination,
               links = linksByOrigin[origin] || (linksByOrigin[origin] = []);
             links.push({source: origin, target: destination});
+            displayData[origin][destination] = ride.count;
+            console.log(displayData);
             countByNeighborhood[origin] = (countByNeighborhood[origin] || 0) + 1;
             countByNeighborhood[destination] = (countByNeighborhood[destination] || 0) + 1;
           }
@@ -128,7 +138,7 @@
           g.append("svg:path")
               .attr("class", "cell")
               .attr("d", function(d, i) { return "M" + polygons[i].join("L") + "Z"; })
-              .on("mouseover", function(d, i) { d3.select("h2 span").text(d.name); updateData(d)});
+              .on("mouseover", function(d, i) { d3.select("h2 span").text(d.name); updateData(d, displayData)});
 
           g.selectAll("path.arc")
               .data(function(d) { return linksByOrigin[d.id] || []; })
