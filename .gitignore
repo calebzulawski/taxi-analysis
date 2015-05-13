@@ -2,7 +2,6 @@
 __pycache__
 *.key
 keys/
-*.csv
 *.exe
 mongoose
 *.pyc
