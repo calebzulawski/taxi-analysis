@@ -132,3 +132,23 @@ circle {
 #cells g:hover path.arc {
   display: inherit;
 }
+
+#sourceDiv {
+  font-size: 12px;
+  height: 30px;
+}
+
+#inputDiv {
+  float: left;
+  width: 100px;
+}
+
+#svgDiv {
+  display: inline-block;
+}
+
+#outputDiv {
+  float: right;
+  width: 100px;
+  height: 100%;
+}

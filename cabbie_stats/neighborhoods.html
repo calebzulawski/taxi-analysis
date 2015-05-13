@@ -15,8 +15,11 @@
 <body>
 
 <div id="inputDiv">
-<input id="numLinks" type="number" value="5" min="1" max="70"/>
+	<input id="numLinks" type="number" value="5" min="1" max="70"/>
+	<div id="sourceDiv"></div>
 </div>
+
+<div id="outputDiv">HI</div>
 
 <div id="svgDiv"></div>
 
@@ -26,8 +29,17 @@
 
     var baseUrl = '/taxi-analysis/cabbie_stats/data/'
 
-    var w = 1280,
+    var w = 800,
         h = 800;
+
+    var cd_names;
+    $.getJSON( baseUrl + "cd_names.json", function( data ) {
+    	cd_names = data;
+    });
+
+    updateData = function(d) {
+    	document.getElementById("sourceDiv").innerHTML = d.id + "<br>" + cd_names[d.id];
+    }
 
     reloadMap = function() {
       document.getElementById("svgDiv").innerHTML = ""
@@ -35,7 +47,7 @@
           .mode("equidistant")
           .origin([-74, 40])
           .scale(70000)
-          .translate([640, 1200]);
+          .translate([300, 1200]);
 
       var path = d3.geo.path()
           .projection(projection);
@@ -116,7 +128,7 @@
           g.append("svg:path")
               .attr("class", "cell")
               .attr("d", function(d, i) { return "M" + polygons[i].join("L") + "Z"; })
-              .on("mouseover", function(d, i) { d3.select("h2 span").text(d.name); });
+              .on("mouseover", function(d, i) { d3.select("h2 span").text(d.name); updateData(d)});
 
           g.selectAll("path.arc")
               .data(function(d) { return linksByOrigin[d.id] || []; })
