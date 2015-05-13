@@ -103,6 +103,7 @@
             .data(function(d) { return linksByOrigin[d.iata] || []; })
           .enter().append("svg:path")
             .attr("class", "arc")
+            .attr("stroke-width", 5) // DOEEEEEEEEEEEE
             .attr("d", function(d) { return path(arc(d)); });
 
         circles.selectAll("circle")
