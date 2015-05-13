@@ -46,6 +46,16 @@
 <div id="svgDiv"></div>
 
 <script>
+	Number.prototype.formatMoney = function(c, d, t){
+	var n = this, 
+	    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+	    d = d == undefined ? "." : d, 
+	    t = t == undefined ? "," : t, 
+	    s = n < 0 ? "-" : "", 
+	    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+	    j = (j = i.length) > 3 ? j % 3 : 0;
+	   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+	};
     //Container
     container = "#svgDiv"
 
@@ -61,9 +71,22 @@
 
     updateData = function(d, displayData) {
     	document.getElementById("sourceDiv").innerHTML = d.id + "<br>" + cd_names[d.id];
+    	type = document.getElementById("typeSelect").value
     	output = "";
-    	for (var key in displayData[d.id]) {
-    		output += key + "<br>" + cd_names[key] + "<br>" + displayData[d.id][key] +"<br><br>";
+    	if(type === "avgFare" || type === "avgTolls" || type === "avgTip" || type === "totalTolls" || type === "totalTips" || type === "totalFare") {
+    	  for (var key in displayData[d.id]) {
+    	    output += cd_names[key] + "<br>$" + parseFloat(displayData[d.id][key]).formatMoney(2) +"<br><br>";
+    	  }
+    	}
+    	else if (type === "avgTipPct") {
+    	  for (var key in displayData[d.id]) {
+    	    output += key + "<br>" + cd_names[key] + "<br>" + Math.round(100*parseFloat(displayData[d.id][key])) +"%<br><br>";
+    	  }
+    	}
+    	else {
+    	  for (var key in displayData[d.id]) {
+    	    output += key + "<br>" + cd_names[key] + "<br>" + parseFloat(displayData[d.id][key]) +"<br><br>";
+    	  }
     	}
     	document.getElementById("outputDiv").innerHTML = output;
     }
