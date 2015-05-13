@@ -117,8 +117,6 @@ define [
             @medallions = @data.medallions
             @numCabbies = Object.keys(@medallions).length - 1
             @initializeComponents()
-            Ethan.makeCalendar(Ethan.calendarTypes.avgTip)
-            Ethan.makeCalendar(Ethan.calendarTypes.totalFare)
 
         initializeComponents: =>
             # initialize sliders
@@ -175,7 +173,9 @@ define [
             plotAttr =
                 width: 200
                 height: 200
-            CabbiePlots.plot ratings, {}, plotAttr, "body"
+            container = "body"
+            $("#{container} svg").remove()
+            CabbiePlots.plot ratings, {}, plotAttr, container
 
     cabbieInst = new Cabbie()
 

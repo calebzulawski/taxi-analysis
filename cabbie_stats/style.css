@@ -44,7 +44,7 @@ table {
 
 /* end reset */
 html {
-    max-width: 1024px;
+    /*max-width: 1024px;*/
     margin: auto;
 }
 body {
@@ -97,6 +97,11 @@ body {
   fill: none;
   stroke: #000;
   stroke-width: 2px;
+}
+
+svg {
+  display:block;
+  margin: auto;
 }
 
 .RdYlGn .q0-11{fill:rgb(165,0,38)}

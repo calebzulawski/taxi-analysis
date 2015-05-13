@@ -12,6 +12,8 @@ require {
         CabbieStats: 'cabbie'
         CabbiePlots: 'cabbiePlot'
         EthanVisualization: 'ethan'
+        calendars: 'calendars'
+        neighborhoods: 'neighborhoods'
 
         # data files
         cabbieData: '../data/cabbies_obj.json'

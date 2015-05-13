@@ -11,6 +11,8 @@
       CabbieStats: 'cabbie',
       CabbiePlots: 'cabbiePlot',
       EthanVisualization: 'ethan',
+      calendars: 'calendars',
+      neighborhoods: 'neighborhoods',
       cabbieData: '../data/cabbies_obj.json',
       extremeData: '../data/extremes.json',
       infoData: '../data/info.json'

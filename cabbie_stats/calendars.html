@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+    <title>Taxi Analysis</title>
+    <link href='http://fonts.googleapis.com/css?family=Palanquin:300,400,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script>
+    <script>
+        require(['/taxi-analysis/cabbie_stats/js/main.js'], function(){
+            require(['calendars']);
+        });
+    </script>
+</head>
+<body>
+<div id="calendar">
+    <h3>Daily Average Tip</h3>
+    <p>We only included credit card transactions greater than $5 and less than $500, since there were a lot of really small and large transactions.
+    When looking at only cash tips versus credit card tips, a very large discrepancy is noticed. This might be because cab drivers do not report
+    cash tips. (Why the fuck would you?) For reference, the minimum tip average was $2.30 on 2/9/13 and the maximum tip average was $2.97 on 12/12/13.</p>
+    <h4>Interesting points:</h4>
+    <ul>
+        <li>Lots of Saturday's and Sunday's have low tips.</li>
+        <li></li>
+    </ul>
+</div>
+<div id="fare">
+    <h3>Daily Total Tip</h3>
+    <p>What the fuck is wrong with September?</p>
+    <h4>Interesting points:</h4>
+    <ul>
+        <li></li>
+        <li></li>
+    </ul>
+</div>
+</body>
+</html>

@@ -177,8 +177,6 @@
         this.medallions = this.data.medallions;
         this.numCabbies = Object.keys(this.medallions).length - 1;
         this.initializeComponents();
-        Ethan.makeCalendar(Ethan.calendarTypes.avgTip);
-        Ethan.makeCalendar(Ethan.calendarTypes.totalFare);
       }
 
       Cabbie.prototype.initializeComponents = function() {
@@ -235,7 +233,7 @@
       };
 
       Cabbie.prototype.submit = function() {
-        var data, fields, info, plotAttr, ratings, resultTitle, resultsData;
+        var container, data, fields, info, plotAttr, ratings, resultTitle, resultsData;
         fields = this.getFields();
         data = this.medallions[fields.md5];
         info = this.info[fields.medallion];
@@ -247,7 +245,9 @@
           width: 200,
           height: 200
         };
-        return CabbiePlots.plot(ratings, {}, plotAttr, "body");
+        container = "body";
+        $(container + " svg").remove();
+        return CabbiePlots.plot(ratings, {}, plotAttr, container);
       };
 
       return Cabbie;

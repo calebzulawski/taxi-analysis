@@ -69,7 +69,7 @@ angular.module('mapApp').controller('mainCtrl', ['$scope','$http', function($sco
     $scope.control = {}
 
     //Load polygons
-    var jsonRoot = 'webapp/json/'
+    var jsonRoot = '/taxi-analysis/webapp/json/'
     $scope.polygons = []
     $scope.squares = []
 

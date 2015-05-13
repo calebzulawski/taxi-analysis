@@ -1,34 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Taxis and stuff</title>
-
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.6.0/lodash.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-google-maps/2.1.0-X.9/angular-google-maps.min.js"></script>
-<script src="webapp/js/app.js"></script>
-<link rel="stylesheet" type="text/css" href="webapp/style.css">
+    <title>Taxi Analysis</title>
 </head>
-
-<body ng-app="mapApp">
-	<div ng-controller="mainCtrl">
-		<div id="sidebar">
-			<div ng-repeat="choice in list.overlays">
-    			<a href="" ng-click="loadJson(choice.url)">{{choice.title}}</a>
-			</div>
-			{{loading}}
-			<div>
-				{{currentTitle}}
-			</div>
-		</div>
-		<div id="map_canvas" class='.angular-google-map-container'>
-	    	<ui-gmap-google-map center="map.center" zoom="map.zoom" options="map.options" control="control" bounds="map.bounds">
-	    		<ui-gmap-polygon ng-repeat="p in polygons track by p.id" path="p.path" fill="p.fill" stroke="p.stroke" static="true" visible="true" events="events" clickable="true"></ui-gmap-polygon>
-	    		<ui-gmap-polygon ng-repeat="p in squares track by p.id" path="p.path" fill="p.fill" stroke="p.stroke" static="true" visible="true"></ui-gmap-polygon>
-	    	</ui-gmap-google-map>
-		</div>
-	</div>
+<body>
+<ul>
+    <li><a href="./cabbie_stats">Cabbie Stats</a></li>
+    <li><a href="./webapp">Map of Taxi Rides</a></li>
+    <li><a href="./cabbie_stats/calendars.html">Cabbie Calendar Views</a></li>
+</ul>
 </body>
-
 </html>
