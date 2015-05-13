@@ -1,5 +1,5 @@
-define ['Ethan'], (Ethan) ->
-    Ethan.makeCalendar(Ethan.calendarTypes.avgTip)
-    Ethan.makeCalendar(Ethan.calendarTypes.totalFare)
+define ['calendarViz'], (CalendarViz) ->
+    CalendarViz.makeCalendar(CalendarViz.calendarTypes.avgTip)
+    CalendarViz.makeCalendar(CalendarViz.calendarTypes.totalFare)
 
     return

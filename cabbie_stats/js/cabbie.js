@@ -2,7 +2,7 @@
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['jquery', 'react', 'crypto', 'CabbiePlots', 'ethan', 'text!extremeData', 'text!cabbieData', 'text!infoData'], function($, React, Crypto, CabbiePlots, Ethan, extremeDataRaw, cabbieDataRaw, infoDataRaw) {
+  define(['jquery', 'react', 'crypto', 'CabbiePlots', 'text!extremeData', 'text!cabbieData', 'text!infoData'], function($, React, Crypto, CabbiePlots, extremeDataRaw, cabbieDataRaw, infoDataRaw) {
     var Button, CONTAINER, Cabbie, Results, SLIDER_CONTAINER, Slider, Textbox, cabbieInst, createButton, createResults, createSlider, createTextbox, submitFunc;
     SLIDER_CONTAINER = '.slider-container';
     CONTAINER = '.container';

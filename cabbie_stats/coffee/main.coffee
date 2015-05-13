@@ -11,7 +11,7 @@ require {
         # modules
         CabbieStats: 'cabbie'
         CabbiePlots: 'cabbiePlot'
-        EthanVisualization: 'ethan'
+        calendarViz: 'calendarViz'
         calendars: 'calendars'
         neighborhoods: 'neighborhoods'
 
