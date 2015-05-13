@@ -7,7 +7,9 @@
       react: '../node_modules/react/dist/react',
       text: '../node_modules/text/text',
       crypto: '../node_modules/crypto/md5',
+      d3: '../node_modules/d3/d3',
       CabbieStats: 'cabbie',
+      CabbiePlots: 'cabbiePlot',
       cabbieData: '../data/cabbies_obj.json',
       extremeData: '../data/extremes.json',
       infoData: '../data/info.json'

@@ -2,10 +2,11 @@ define [
     'jquery'
     'react'
     'crypto'
+    'CabbiePlots'
     'text!extremeData'
     'text!cabbieData'
     'text!infoData'
-], ($, React, Crypto, extremeDataRaw, cabbieDataRaw, infoDataRaw) ->
+], ($, React, Crypto, CabbiePlots, extremeDataRaw, cabbieDataRaw, infoDataRaw) ->
 
     SLIDER_CONTAINER = '.slider-container'
     CONTAINER = '.container'
@@ -82,7 +83,7 @@ define [
             </div>
 
     createResults = (fields, medallion, resultTitle, parent=CONTAINER, container='resultsList') ->
-        $(parent).append "<div id="result" class='#{container}'>"
+        $(parent).append "<div id='result' class='#{container}'>"
         textLabels =
             total: "Your weighted rating"
             agility: "Agility"
@@ -168,6 +169,10 @@ define [
             resultsData = @mergeCabbieResults(data, ratings)
             resultTitle = "Results for Medallion # #{fields.medallion}"
             @results = createResults resultsData, fields.medallion, resultTitle
+            plotAttr =
+                width: 200
+                height: 200
+            CabbiePlots.plot ratings, {}, plotAttr, "body"
 
     cabbieInst = new Cabbie()
 

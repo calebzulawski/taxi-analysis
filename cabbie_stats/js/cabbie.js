@@ -2,7 +2,7 @@
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  define(['jquery', 'react', 'crypto', 'text!extremeData', 'text!cabbieData', 'text!infoData'], function($, React, Crypto, extremeDataRaw, cabbieDataRaw, infoDataRaw) {
+  define(['jquery', 'react', 'crypto', 'CabbiePlots', 'text!extremeData', 'text!cabbieData', 'text!infoData'], function($, React, Crypto, CabbiePlots, extremeDataRaw, cabbieDataRaw, infoDataRaw) {
     var Button, CONTAINER, Cabbie, Results, SLIDER_CONTAINER, Slider, Textbox, cabbieInst, createButton, createResults, createSlider, createTextbox, submitFunc;
     SLIDER_CONTAINER = '.slider-container';
     CONTAINER = '.container';
@@ -138,12 +138,12 @@
     createResults = function(fields, medallion, resultTitle, parent, container) {
       var textLabels;
       if (parent == null) {
-        parent = '#result';
+        parent = CONTAINER;
       }
       if (container == null) {
         container = 'resultsList';
       }
-      $(parent).append("<div class='" + container + "'>");
+      $(parent).append("<div id='result' class='" + container + "'>");
       textLabels = {
         total: "Your weighted rating",
         agility: "Agility",
@@ -233,14 +233,19 @@
       };
 
       Cabbie.prototype.submit = function() {
-        var data, fields, info, ratings, resultTitle, resultsData;
+        var data, fields, info, plotAttr, ratings, resultTitle, resultsData;
         fields = this.getFields();
         data = this.medallions[fields.md5];
         info = this.info[fields.medallion];
         ratings = this.generateRatings(data, fields);
         resultsData = this.mergeCabbieResults(data, ratings);
         resultTitle = "Results for Medallion # " + fields.medallion;
-        return this.results = createResults(resultsData, fields.medallion, resultTitle);
+        this.results = createResults(resultsData, fields.medallion, resultTitle);
+        plotAttr = {
+          width: 200,
+          height: 200
+        };
+        return CabbiePlots.plot(ratings, {}, plotAttr, "body");
       };
 
       return Cabbie;
