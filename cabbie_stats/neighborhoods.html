@@ -63,7 +63,7 @@
     	document.getElementById("sourceDiv").innerHTML = d.id + "<br>" + cd_names[d.id];
     	output = "";
     	for (var key in displayData[d.id]) {
-    		output += key + "<br>" + cd_names[d.id] + "<br>" + displayData[d.id][key] +"<br><br>";
+    		output += key + "<br>" + cd_names[key] + "<br>" + displayData[d.id][key] +"<br><br>";
     	}
     	document.getElementById("outputDiv").innerHTML = output;
     }
