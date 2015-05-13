@@ -3,10 +3,11 @@ define [
     'react'
     'crypto'
     'CabbiePlots'
+    'ethan'
     'text!extremeData'
     'text!cabbieData'
     'text!infoData'
-], ($, React, Crypto, CabbiePlots, extremeDataRaw, cabbieDataRaw, infoDataRaw) ->
+], ($, React, Crypto, CabbiePlots, Ethan, extremeDataRaw, cabbieDataRaw, infoDataRaw) ->
 
     SLIDER_CONTAINER = '.slider-container'
     CONTAINER = '.container'
@@ -116,6 +117,8 @@ define [
             @medallions = @data.medallions
             @numCabbies = Object.keys(@medallions).length - 1
             @initializeComponents()
+            Ethan.makeCalendar(Ethan.calendarTypes.avgTip)
+            Ethan.makeCalendar(Ethan.calendarTypes.totalFare)
 
         initializeComponents: =>
             # initialize sliders

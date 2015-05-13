@@ -1,5 +1,5 @@
 require {
-    baseUrl: '/cabbie_stats/js/'
+    baseUrl: '/taxi-analysis/cabbie_stats/js/'
     paths:
         # dependencies
         jquery: '../node_modules/jquery/dist/jquery.min'
@@ -11,6 +11,7 @@ require {
         # modules
         CabbieStats: 'cabbie'
         CabbiePlots: 'cabbiePlot'
+        EthanVisualization: 'ethan'
 
         # data files
         cabbieData: '../data/cabbies_obj.json'
