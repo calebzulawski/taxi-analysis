@@ -38,6 +38,8 @@
 	<input type="radio" id="sortLow" name="sort" value="low">Show lowest
 	</form>
 
+	<input type="text" id="outSort">
+
 	<div id="sourceDiv"></div>
 </div>
 
@@ -80,7 +82,7 @@
     	}
     	else if (type === "avgTipPct") {
     	  for (var key in displayData[d.id]) {
-    	    output += key + "<br>" + cd_names[key] + "<br>" + Math.round(100*parseFloat(displayData[d.id][key])) +"%<br><br>";
+    	    output += key + "<br>" + cd_names[key] + "<br>" + Math.round(parseFloat(displayData[d.id][key])) +"%<br><br>";
     	  }
     	}
     	else {
