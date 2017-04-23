@@ -45,7 +45,7 @@ angular.module('mapApp', ['uiGmapgoogle-maps']);
 
 angular.module('mapApp').config(function(uiGmapGoogleMapApiProvider) {
     uiGmapGoogleMapApiProvider.configure({
-        key: 'AIzaSyCx0XlJA1D6xCY324p4WrBdx4i27smZlms',
+        key: 'AIzaSyCTXHVQgW9OCq24AchAm6rqxpWMa21_uk0',
         v: '3.17',
         libraries: 'weather,geometry,visualization'
     });
